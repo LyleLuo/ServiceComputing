@@ -14,9 +14,9 @@
 原本我是使用[Xshell](https://www.netsarang.com/zh/xshell/)+[Xftp](https://www.netsarang.com/zh/xftp/)。这套组合管理多个服务器十分方便，个人十分安利这套组合。但考虑到本课程会涉及到大量的编码，使用VS Code无论是在编程上还是远程调试上都方便许多，于是选择使用VS Code作为以后实验的主要工具。基本人人都在Windows上安装过VS Code，因此不再赘述安装过程。
 
 1. 安装Remote SSH插件  
-![SSH_r](figure\remote_ssh.png)
+![SSH_r](figure/remote_ssh.png)
 2. 新增配置文件  
-![SSH_conf](figure\conf_ssh.png)
+![SSH_conf](figure/conf_ssh.png)
 配置文件内容如下所示，由于懒得输密码，我使用了密钥登陆（[生成密钥教程](https://www.cnblogs.com/henkeyi/p/10487553.html)）。其中IdentityFile是本地私钥的路径，公钥放到云服务器的 ~/.ssh/authorized_keys 上。
 ```
     Host luowle  
@@ -25,7 +25,7 @@
         IdentityFile "C:\Users\31290\.ssh\luowle_id_rsa"
 ```
 3. 容易进行开发的终端环境就这样建立好了
-![SSH](figure\ssh.png)
+![SSH](figure/ssh.png)
 
 ### golang配置
 #### 安装
@@ -113,7 +113,7 @@ git在yum安装的时候已经自动安装了依赖，无需再安装
 
 #### 安装 go 的一些工具
 进入 VS Code 就提示需要安装相关工具，如下图所示。但是由于众所周知的原因安装不成功。因此需要手动安装！
-![go_tool](figure\go_tool.png)
+![go_tool](figure/go_tool.png)
 
 1. 下载源代码到本地
 ```sh
