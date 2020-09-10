@@ -17,13 +17,13 @@
 1. 安装Remote SSH插件  
 ![SSH_r](figure/remote_ssh.png)
 2. 新增配置文件  
-![SSH_conf](figure/conf_ssh.png)
+![SSH_conf](figure/conf_ssh.png)  
 配置文件内容如下所示，由于懒得输密码，我使用了密钥登陆（[生成密钥教程](https://www.cnblogs.com/henkeyi/p/10487553.html)）。其中IdentityFile是本地私钥的路径，公钥放到云服务器的 ~/.ssh/authorized_keys 上。
 ```
-    Host luowle  
-        HostName luowle.cn  
-        User luowle  
-        IdentityFile "C:\Users\31290\.ssh\luowle_id_rsa"
+Host luowle  
+    HostName luowle.cn  
+    User luowle  
+    IdentityFile "C:\Users\31290\.ssh\luowle_id_rsa"
 ```
 3. 容易进行开发的终端环境就这样建立好了
 ![SSH](figure/ssh.png)
@@ -131,9 +131,9 @@ hello, world
 #### GIT
 git在yum安装的时候已经自动安装了依赖，无需再安装
 
-#### 安装 go 的一些工具
-进入 VS Code 就提示需要安装相关工具，如下图所示。
-![go_tool](figure/go_tool.png)
+#### 安装 go 的一些工具  
+进入 VS Code 就提示需要安装相关工具，如下图所示。  
+![go_tool](figure/go_tool.png)  
 但是点击install后会出现失败，错误与下面的类似
 ```
 gocode:
@@ -305,12 +305,12 @@ API server listening at: [::]:2345
 ![dlv_run](figure/dlv.png)
 
 ### 我的第一个包与测试
-
+待完成
 
 ## 问题或要点小结
 
 ## 参考资料
-[VSCode安装GO语言依赖工具](https://www.jianshu.com/p/f952042af8ff)  
-[利用delve（dlv）在Visual Code中进行go程序的远程调试-debug方式](https://www.jianshu.com/p/648cf61a9498)
+[VSCode安装GO语言依赖工具](https://www.jianshu.com/p/f952042af8ff)   
+[利用delve（dlv）在Visual Code中进行go程序的远程调试-debug方式](https://www.jianshu.com/p/648cf61a9498)  
 [go:cannot find main module;see 'go help modules'报错无法运行](https://blog.csdn.net/mr_oldcold/article/details/100759488?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param)
 
