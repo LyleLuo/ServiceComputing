@@ -65,10 +65,7 @@ download  gowork  log  login.log  software  src
 ```sh
 export GOPATH=$HOME/gowork
 export PATH=$PATH:$GOPATH/bin
-```
-
-```sh
-$ source $HOME/.bashrc
+source $HOME/.bashrc
 ```
 3. 检查配置
 ```
@@ -111,8 +108,9 @@ GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-bu
 ```sh
 $ mkdir $GOPATH/src/github.com/github-user/hello -p
 ```
+
 2. 使用 VS Code 创建 hello.go
-```go
+``` go
 package main
 
 import "fmt"
