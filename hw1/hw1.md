@@ -33,6 +33,7 @@ Host luowle
 ```
 yum install golang
 ```
+
 2. 查看安装目录，可见安装在 /usr/lib/golang 上
 ```
 [root@VM_0_4_centos luowle]# rpm -ql golang |more
@@ -47,12 +48,13 @@ yum install golang
 /usr/lib/golang/api/except.txt
 ……
 ……
-```
+```  
+
 3. 查看版本
 ```
 [root@VM_0_4_centos luowle]# go version
 go version go1.13.14 linux/amd64
-```
+```  
 
 #### 设置环境变量
 1. 从root切换回平常使用的账户（luowle），创建工作目录
