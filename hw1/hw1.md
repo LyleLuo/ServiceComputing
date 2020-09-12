@@ -124,7 +124,7 @@ func main() {
 ``` 
 
 3. 在终端运行
-```sh
+```sh 
 [luowle@VM_0_4_centos hello]$ go run hello.go 
 hello, world
 ```
