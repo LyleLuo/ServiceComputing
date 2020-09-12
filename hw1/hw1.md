@@ -113,18 +113,16 @@ $ mkdir $GOPATH/src/github.com/github-user/hello -p
 ```
 
 2. 使用 VS Code 创建 hello.go   
-```
+```go  
 package main
-
 import "fmt"
-
 func main() {
     fmt.Printf("hello, world\n")
 }
 ``` 
 
 3. 在终端运行  
-```sh 
+```sh  
 [luowle@VM_0_4_centos hello]$ go run hello.go 
 hello, world
 ```
