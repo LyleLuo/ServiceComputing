@@ -110,7 +110,6 @@ $ mkdir $GOPATH/src/github.com/github-user/hello -p
 ```
 
 2. 使用 VS Code 创建 hello.go   
-
 ``` go
 package main
 
