@@ -10,7 +10,6 @@
 
 
 ## 安装过程
-
 ### 首先配置舒服的终端环境（Visual Studio Code）
 原本我是使用[Xshell](https://www.netsarang.com/zh/xshell/)+[Xftp](https://www.netsarang.com/zh/xftp/)。这套组合管理多个服务器十分方便，个人十分安利这套组合。但考虑到本课程会涉及到大量的编码，使用VS Code无论是在编程上还是远程调试上都方便许多，于是选择使用VS Code作为以后实验的主要工具。基本人人都在Windows上安装过VS Code，因此不再赘述安装过程。
 
@@ -54,6 +53,7 @@ yum install golang
 [root@VM_0_4_centos luowle]# go version
 go version go1.13.14 linux/amd64
 ```
+
 #### 设置环境变量
 1. 从root切换回平常使用的账户（luowle），创建工作目录
 ```sh
@@ -103,6 +103,7 @@ CGO_LDFLAGS="-g -O2"
 PKG_CONFIG="pkg-config"
 GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build080279731=/tmp/go-build -gno-record-gcc-switches"
 ```
+
 #### 创建Hello, world!
 1. 重新登陆后创建源代码目录
 ```sh
@@ -258,6 +259,7 @@ go: cannot find main module; see 'go help modules'
 [luowle@VM_0_4_centos ~]$ hello
 hello, world
 ```
+
 #### 安装与运行 go tour
 ```sh
 [luowle@VM_0_4_centos ~]$ go get github.com/Go-zh/tour/gotour
