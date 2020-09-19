@@ -306,9 +306,94 @@ API server listening at: [::]:2345
 ![dlv_run](figure/dlv.png)
 
 ### 我的第一个包与测试
-待完成
+#### 自己使用牛顿法写一个Sqrt函数
+包的代码如下所示
+
+``` go
+// Package hw1 随便写的一个库
+package hw1
+
+// Sqrt 自己写的牛顿法开根号
+func Sqrt(x float64) float64 {
+	z := 1.0
+	for diff := 100.0; diff > 0.0001; {
+		oldZ := z
+		z -= (z*z - x) / (2 * x)
+		if oldZ < z {
+			diff = z - oldZ
+		} else {
+			diff = oldZ - z
+		}
+	}
+	return z
+}
+
+```
+
+修改hello，使其调用上面所写的包
+
+``` go
+package main
+
+import (
+	"fmt"
+
+	"github.com/ServiceComputing/hw1"
+)
+
+func main() {
+	fmt.Printf("hello, world\n")
+	fmt.Printf("Sqrt(2) is %f\n", hw1.Sqrt(2))
+}
+```
+
+运行结果如下所示
+``` sh
+[luowle@VM_0_4_centos hello]$ hello
+hello, world
+Sqrt(2) is 1.414177
+```
+
+#### 编写自己的测试
+思路是将自己写的Sqrt与标准库math.Sqrt进行比较，如果两者相差超过0.01，则认为不通过测试  
+测试代码如下所示  
+
+``` go
+package hw1
+
+import (
+	"math"
+	"testing"
+)
+
+func TestReverse(t *testing.T) {
+	cases := []float64{2, 3, 5, 7, 9, 16, 256, 1024, 4096}
+	for _, c := range cases {
+		result := Sqrt(c)
+		if result-math.Sqrt(c) > 0.01 || math.Sqrt(c)-result > 0.01 {
+			t.Errorf("my Sqrt(%f) == %f, but want %f", c, result, math.Sqrt(c))
+		}
+	}
+}
+
+```
+
+测试结果如下所示，可见通过了自己的测试  
+
+``` sh
+[luowle@VM_0_4_centos hw1]$ go test
+PASS
+ok      github.com/ServiceComputing/hw1 0.002s
+```
 
 ## 问题或要点小结
+- SSH使用密钥登陆既可以提高安全性也可以免去自己敲代码的麻烦
+- 由于网络原因不能上golang官网，很多东西无法下载。解决方法有二：
+    1. 在GitHub上下载源码后安装（虽然也很慢）
+    2. 使用[__代理__](https://goproxy.io)
+- 要注意使用代理时的环境变量，没有用代理的需要时可以把GO111MODULE为auto
+- 使用远程go调试时，配置文件搭配应为"request": "launch","mode": "remote"
+
 
 ## 参考资料
 [VSCode安装GO语言依赖工具](https://www.jianshu.com/p/f952042af8ff)   
