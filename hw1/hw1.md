@@ -392,7 +392,7 @@ ok      github.com/ServiceComputing/hw1 0.002s
     1. 在GitHub上下载源码后安装（虽然也很慢）
     2. 使用[__代理__](https://goproxy.io)
 - 要注意使用代理时的环境变量，没有用代理的需要时可以把GO111MODULE为auto
-- 使用远程go调试时，配置文件搭配应为"request": "launch","mode": "remote"
+- 使用远程go调试时，配置文件搭配应为"request": "launch","mode": "remote"（忽视警告）
 
 
 ## 参考资料
