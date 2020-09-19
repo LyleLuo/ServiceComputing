@@ -228,7 +228,7 @@ go get -u github.com/mdempsky/gocode
 - 重启 VS Code
 
 其实设置[__代理__](https://goproxy.io)后一般都可以直接下载
-```
+```sh
 go env -w GO111MODULE=on
 go env -w GOPROXY=https://goproxy.io,direct
 
@@ -238,6 +238,15 @@ go env -w GOPRIVATE=*.corp.example.com
 # 设置不走 proxy 的私有组织（可选）
 go env -w GOPRIVATE=example.com/org_name
 ```
+
+在本地安装工具也需要代理，进入PowerShell敲如下命令
+```powershell
+# 启用 Go Modules 功能
+$env:GO111MODULE="on"
+# 配置 GOPROXY 环境变量
+$env:GOPROXY="https://goproxy.io"
+```
+
 3. 安装运行Hello, world!  
 在乱配一通环境后，发现安装不上hello，同时也跑不起来。
 ```
