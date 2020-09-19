@@ -309,7 +309,7 @@ API server listening at: [::]:2345
 #### 自己使用牛顿法写一个Sqrt函数
 包的代码如下所示
 
-``` go
+```go
 // Package hw1 随便写的一个库
 package hw1
 
@@ -332,7 +332,7 @@ func Sqrt(x float64) float64 {
 
 修改hello，使其调用上面所写的包
 
-``` go
+```go
 package main
 
 import (
@@ -348,7 +348,7 @@ func main() {
 ```
 
 运行结果如下所示
-``` sh
+```sh
 [luowle@VM_0_4_centos hello]$ hello
 hello, world
 Sqrt(2) is 1.414177
@@ -358,7 +358,7 @@ Sqrt(2) is 1.414177
 思路是将自己写的Sqrt与标准库math.Sqrt进行比较，如果两者相差超过0.01，则认为不通过测试  
 测试代码如下所示  
 
-``` go
+```go
 package hw1
 
 import (
@@ -380,7 +380,7 @@ func TestReverse(t *testing.T) {
 
 测试结果如下所示，可见通过了自己的测试  
 
-``` sh
+```sh
 [luowle@VM_0_4_centos hw1]$ go test
 PASS
 ok      github.com/ServiceComputing/hw1 0.002s
