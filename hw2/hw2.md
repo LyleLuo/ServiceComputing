@@ -1,19 +1,15 @@
 # 作业二：使用快速排序练习TDD
 ## 先写测试
 ```go
-package hw2
-
-import "testing"
-
 func TestSort(t *testing.T) {
 	arr := []int{3, 4, 2, 1, 7, 5, 6, 8, 9, 0}
 	expected := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-    Sort(arr, 0, len(arr) - 1)
+	Sort(arr, 0, len(arr)-1)
 	for i := 0; i < 10; i++ {
 		if arr[i] != expected[i] {
-            t.Errorf("expected '%v' but got '%v'", expected, arr)
-            break
+			t.Errorf("expected '%v' but got '%v'", expected, arr)
+			break
 		}
 	}
 }
