@@ -1,0 +1,167 @@
+package myselpg
+
+import (
+	"bufio"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"os/exec"
+
+	"github.com/spf13/pflag"
+)
+
+// Page 是selpg的命令行参数结构体
+type Page struct {
+	StartPage  int
+	EndPage    int
+	InFileName string
+	PageLen    int
+	PageType   bool
+	PrintDest  string
+}
+
+var errPageNotPos = errors.New("start page and end page should be positive")
+var errPageStartGreater = errors.New("end page should be greater then start page")
+var errTooManyArgs = errors.New("there are too many arguments")
+var errFile = errors.New("cannot open your input file")
+var errPipe = errors.New("cannot open pipe")
+
+func perror(err error) {
+	if err != nil {
+		if _, err2 := fmt.Fprintln(os.Stderr, err); err2 != nil {
+			panic(err2)
+		}
+		os.Exit(1)
+	}
+}
+
+func usage() {
+	progName := os.Args[0]
+	fmt.Fprintf(os.Stderr, "USAGE: %s -sstart_page -eend_page [ -f | -llines_per_page ] [ -ddest ] [ in_filename ]\n", progName)
+}
+
+func pargs(page *Page) error {
+	pflag.IntVarP(&page.StartPage, "start-page", "s", 0, "start page")
+	pflag.IntVarP(&page.EndPage, "end-page", "e", 0, "end page")
+	pflag.IntVarP(&page.PageLen, "page-len", "l", 72, "page length")
+	pflag.BoolVarP(&page.PageType, "page-type", "f", false, "page type")
+	pflag.StringVarP(&page.PrintDest, "print-dest", "d", "", "printer destination")
+	pflag.Usage = func() {
+		usage()
+		pflag.PrintDefaults()
+	}
+	pflag.Parse()
+	if page.StartPage <= 0 || page.EndPage <= 0 {
+		pflag.Usage()
+		return errPageNotPos
+	}
+
+	if page.StartPage > page.EndPage {
+		return errPageStartGreater
+	}
+
+	if pflag.NArg() == 1 {
+		page.InFileName = pflag.Arg(0)
+	} else if pflag.NArg() > 1 {
+		return errTooManyArgs
+	} else {
+		page.InFileName = ""
+	}
+
+	return nil
+}
+
+func pinput(page *Page) error {
+	var read *bufio.Reader
+	var write *bufio.Writer
+
+	// 设置在哪里读取数据
+	if len(page.InFileName) > 0 {
+		fIn, err := os.Open(page.InFileName)
+		if err != nil {
+			return errFile
+		}
+		defer fIn.Close()
+		read = bufio.NewReader(fIn)
+	} else {
+		read = bufio.NewReader(os.Stdin)
+	}
+
+	// 设置数据写到哪里
+	if len(page.PrintDest) > 0 {
+		cmd := exec.Command("lp", "-d"+page.PrintDest)
+		stdinPipe, err := cmd.StdinPipe()
+		if err != nil {
+			return errPipe
+		}
+		defer stdinPipe.Close()
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+		if err := cmd.Start(); err != nil {
+			return err
+		}
+		write = bufio.NewWriter(stdinPipe)
+	} else {
+		write = bufio.NewWriter(os.Stdout)
+	}
+	defer write.Flush()
+
+	lines, pages := 1, 1
+
+	if page.PageType {
+		for {
+			ch, err := read.ReadByte()
+			if err == io.EOF {
+				break
+			} else if err != nil {
+				return err
+			}
+			if ch == '\f' {
+				pages++
+			}
+			if page.StartPage <= pages && pages <= page.EndPage {
+				if err := write.WriteByte(ch); err != nil {
+					return err
+				}
+			}
+		}
+	} else {
+		for {
+			cstream, err := read.ReadBytes('\n')
+			if err == io.EOF {
+				if page.StartPage <= pages && pages <= page.EndPage {
+					if _, err := write.Write(cstream); err != nil {
+						return err
+					}
+				}
+				break
+			} else if err != nil {
+				return err
+			}
+
+			if lines > page.PageLen {
+				pages++
+				lines = 1
+			}
+			if page.StartPage <= pages && pages <= page.EndPage {
+				if _, err := write.Write(cstream); err != nil {
+					return err
+				}
+			}
+			lines++
+		}
+	}
+	return nil
+}
+
+// Selpg 是 select page 程序
+func Selpg(page *Page) {
+	if page == nil {
+		page = new(Page)
+		perror(pargs(page))
+		perror(pinput(page))
+	} else {
+		perror(pinput(page))
+	}
+}
