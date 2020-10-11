@@ -1,22 +1,4 @@
-}
-
-func pinput(page *Page) error {
-	var read *bufio.Reader
-	var write *bufio.Writer
-
-	// 设置在哪里读取数据
-	if len(page.InFileName) > 0 {
-		fIn, err := os.Open(page.InFileName)
-		if err != nil {
-			return errFile
-		}
-		defer fIn.Close()
-		read = bufio.NewReader(fIn)
-	} else {
-		read = bufio.NewReader(os.Stdin)
-	}
-
-	// 设置数据写到哪里
+	// 设置数据写到哪里
 	if len(page.PrintDest) > 0 {
 		cmd := exec.Command("lp", "-d"+page.PrintDest)
 		stdinPipe, err := cmd.StdinPipe()
@@ -70,3 +52,27 @@ func pinput(page *Page) error {
 
 			if lines > page.PageLen {
 				pages++
+				lines = 1
+			}
+			if page.StartPage <= pages && pages <= page.EndPage {
+				if _, err := write.Write(cstream); err != nil {
+					return err
+				}
+			}
+			lines++
+		}
+	}
+	return nil
+}
+
+// Selpg 是 select page 程序
+func Selpg(page *Page) {
+	if page == nil {
+		page = new(Page)
+		perror(pargs(page))
+		perror(pinput(page))
+	} else {
+		perror(pinput(page))
+	}
+}
+

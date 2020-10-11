@@ -2,6 +2,7 @@ package myselpg
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -72,7 +73,7 @@ func pargs(page *Page) error {
 	return nil
 }
 
-func pinput(page *Page) error {
+func pinput(page *Page, outputBuf *bytes.Buffer) error {
 	var read *bufio.Reader
 	var write *bufio.Writer
 
@@ -90,7 +91,7 @@ func pinput(page *Page) error {
 
 	// 设置数据写到哪里
 	if len(page.PrintDest) > 0 {
-		cmd := exec.Command("lp", "-d"+page.PrintDest)
+		cmd := exec.Command("cat", "-n")
 		stdinPipe, err := cmd.StdinPipe()
 		if err != nil {
 			return errPipe
@@ -102,6 +103,8 @@ func pinput(page *Page) error {
 			return err
 		}
 		write = bufio.NewWriter(stdinPipe)
+	} else if outputBuf != nil {
+		write = bufio.NewWriter(outputBuf)
 	} else {
 		write = bufio.NewWriter(os.Stdout)
 	}
@@ -109,6 +112,7 @@ func pinput(page *Page) error {
 
 	lines, pages := 1, 1
 
+	// 根据PageType来选择如何读写
 	if page.PageType {
 		for {
 			ch, err := read.ReadByte()
@@ -117,17 +121,18 @@ func pinput(page *Page) error {
 			} else if err != nil {
 				return err
 			}
-			if ch == '\f' {
-				pages++
-			}
 			if page.StartPage <= pages && pages <= page.EndPage {
 				if err := write.WriteByte(ch); err != nil {
 					return err
 				}
 			}
+			if ch == '\f' {
+				pages++
+			}
 		}
 	} else {
 		for {
+			// 这次可以使用封装程度更高的scan
 			cstream, err := read.ReadBytes('\n')
 			if err == io.EOF {
 				if page.StartPage <= pages && pages <= page.EndPage {
@@ -156,12 +161,12 @@ func pinput(page *Page) error {
 }
 
 // Selpg 是 select page 程序
-func Selpg(page *Page) {
+func Selpg(page *Page, outputBuf *bytes.Buffer) {
 	if page == nil {
 		page = new(Page)
 		perror(pargs(page))
-		perror(pinput(page))
+		perror(pinput(page, outputBuf))
 	} else {
-		perror(pinput(page))
+		perror(pinput(page, outputBuf))
 	}
 }

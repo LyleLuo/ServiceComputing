@@ -1,4 +1,4 @@
-package hw1
+package mysqrt
 
 import (
 	"math"

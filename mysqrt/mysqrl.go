@@ -1,5 +1,5 @@
 // Package hw1 随便写的一个库
-package hw1
+package mysqrt
 
 // Sqrt 自己写的牛顿法开根号
 func Sqrt(x float64) float64 {
