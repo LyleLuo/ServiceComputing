@@ -1,3 +1,4 @@
+// Package iniconfig 用于读取ini配置文件的包
 package iniconfig
 
 import (
@@ -14,9 +15,6 @@ var commentChar rune
 // ErrKeyNotExist 错误：不存在该键值对
 var ErrKeyNotExist = errors.New("The section don't include this key-value pair")
 
-// ErrConfigNotExist 错误：配置列表还没有被初始化
-var ErrConfigNotExist = errors.New("The Config struct haven't been constructed")
-
 func init() {
 	if runtime.GOOS == "windows" {
 		commentChar = ';'
@@ -25,13 +23,13 @@ func init() {
 	}
 }
 
-// Config 储存配置文件的信息
+// Config 储存配置文件的信息，包括文件名和文件里的键值对
 type Config struct {
 	filepath string
 	Conflist map[string]map[string]string
 }
 
-// InitConfig 读取配置文件的信息
+// InitConfig 读取配置文件的信息，参数filepath是要读取的文件路径，返回值*Config是存储文件信息的结构体，返回值err是错误类型
 func InitConfig(filepath string) (*Config, error) {
 	c := new(Config)
 	c.filepath = filepath
@@ -39,7 +37,7 @@ func InitConfig(filepath string) (*Config, error) {
 	return c, err
 }
 
-// GetValue 通过section和name获得值
+// GetValue 通过参数section和name获得值，返回string是value，error是错误类型
 func (c *Config) GetValue(section, name string) (string, error) {
 	if _, ok := c.Conflist[section][name]; ok {
 		return c.Conflist[section][name], nil
@@ -47,7 +45,7 @@ func (c *Config) GetValue(section, name string) (string, error) {
 	return "", ErrKeyNotExist
 }
 
-// readList 读取配置文件
+// readList 读取配置文件的方法，返回值是错误类型
 func (c *Config) readList() error {
 	file, err := os.Open(c.filepath)
 	if err != nil {
@@ -59,13 +57,11 @@ func (c *Config) readList() error {
 	var sectionMap = make(map[string]string)
 	isFirstSection := true
 	buf := bufio.NewReader(file)
+	iter := 1
 	for {
 		l, err := buf.ReadString('\n')
 		if err != nil && err != io.EOF {
 			return err
-		}
-		if err == io.EOF {
-			break
 		}
 		line := strings.TrimSpace(l)
 		switch {
@@ -80,6 +76,9 @@ func (c *Config) readList() error {
 			section = strings.TrimSpace(line[1 : len(line)-1])
 			sectionMap = make(map[string]string)
 		default:
+			if iter == 1 {
+				isFirstSection = false
+			}
 			i := strings.IndexAny(line, "=")
 			if i == -1 {
 				continue
@@ -87,16 +86,11 @@ func (c *Config) readList() error {
 			value := strings.TrimSpace(line[i+1 : len(line)])
 			sectionMap[strings.TrimSpace(line[0:i])] = value
 		}
+		if err == io.EOF {
+			break
+		}
 	}
 
 	c.Conflist[section] = sectionMap
 	return nil
-}
-
-// GetAllSetion 返回所有的section和其中的键值对
-func (c *Config) GetAllSetion() (map[string]map[string]string, error) {
-	if c.Conflist == nil {
-		return nil, ErrConfigNotExist
-	}
-	return c.Conflist, nil
 }
