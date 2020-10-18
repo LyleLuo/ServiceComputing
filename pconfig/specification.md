@@ -247,6 +247,7 @@ ok      github.com/LyleLuo/ServiceComputing/pconfig/iniconfig   5.007s
 ```
 
 ## 功能测试
+### 正确性测试
 测试主函数如下所示
 ```go
 package main
@@ -327,3 +328,23 @@ map[:map[app_mode:development] paths:map[data:/home/git/grafana] server:map[enfo
 map[:map[app_mode:development] paths:map[data:/home/git/grafana] server:map[enforce_domain:true https_port:443 protocol:https]]
 ```
 可见实现了所需的功能，Watch 返回了一个新的配置信息。
+
+### 错误性测试
+修该主函数，给一个不存在的文件路径看看是否报错。
+```go
+func main() {
+    // 只修改了下面这行，给了个错误路径
+	c1, err := iniconfig.InitConfig("hhhhhhh")
+	m1 := c1.Conflist
+
+```
+如期产生错误信息并退出
+```sh
+[luowle@VM_0_4_centos pconfig]$ go run main.go 
+open hhhhhhh: no such file or directory
+exit status 1
+```
+
+### 功能测试总结
+可见，当路径正确时，修改文件后 Watch 返回了一个新的配置信息。而当路径错误时，也可以返回正确的错误。该包的功能较为完备。
+
