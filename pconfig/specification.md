@@ -1,5 +1,11 @@
 # specification
 ## 设计说明
+### 文件
+- config.go -- 读文件到 Config 结构体并实现其相关方法
+- perror.go -- 定义了一个处理错误的函数
+- watch_listen.go -- Watch 和 接口 Listener 的相关实现
+- xx_test.go -- xx对应的测试文件
+
 ### 核心功能 Watch
 Watch 用来监听文件改变的函数，filename 是文件路径，listener 是接口，返回一个储存文件信息的 map 和错误类型 error。Watch 里调用 listen 对文件修改情况进行轮询，如果 listen 轮询结束将修改后的配置以 map[string]map[string]string 返回。
 ```go
