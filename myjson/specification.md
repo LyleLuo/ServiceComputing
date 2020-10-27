@@ -2,30 +2,30 @@
 <!-- TOC -->
 
 - [specification](#specification)
-    - [设计说明](#设计说明)
-        - [设计思路](#设计思路)
-        - [文件](#文件)
-        - [核心功能 JsonMarshal](#核心功能-jsonmarshal)
-        - [函数返回值](#函数返回值)
-        - [核心的设计与实现](#核心的设计与实现)
-            - [func typeEncoder(t reflect.Type) EncoderFunc](#func-typeencodert-reflecttype-encoderfunc)
-            - [func newTypeEncoder(t reflect.Type, allowAddr bool) EncoderFunc](#func-newtypeencodert-reflecttype-allowaddr-bool-encoderfunc)
-            - [func intEncoder(e *EncodeState, v reflect.Value)](#func-intencodere-encodestate-v-reflectvalue)
-            - [func (bits floatEncoder) encode(e *EncodeState, v reflect.Value)](#func-bits-floatencoder-encodee-encodestate-v-reflectvalue)
-            - [func newStructEncoder(t reflect.Type) EncoderFunc](#func-newstructencodert-reflecttype-encoderfunc)
-            - [func typeFields(t reflect.Type) structFields](#func-typefieldst-reflecttype-structfields)
-            - [func (se structEncoder) encode(e *EncodeState, v reflect.Value)](#func-se-structencoder-encodee-encodestate-v-reflectvalue)
-            - [func interfaceEncoder(e *EncodeState, v reflect.Value)](#func-interfaceencodere-encodestate-v-reflectvalue)
-    - [单元或集成测试](#单元或集成测试)
-        - [测试代码](#测试代码)
-            - [marshal_test.go](#marshal_testgo)
-            - [encode_test.go](#encode_testgo)
-            - [tags_test.go](#tags_testgo)
-        - [测试结果](#测试结果)
-    - [功能测试](#功能测试)
-        - [测试代码](#测试代码-1)
-        - [测试结果](#测试结果-1)
-    - [总结](#总结)
+	- [设计说明](#设计说明)
+		- [设计思路](#设计思路)
+		- [文件](#文件)
+		- [核心功能 JsonMarshal](#核心功能-jsonmarshal)
+		- [函数返回值](#函数返回值)
+		- [核心的设计与实现](#核心的设计与实现)
+			- [func typeEncoder(t reflect.Type) EncoderFunc](#func-typeencodert-reflecttype-encoderfunc)
+			- [func newTypeEncoder(t reflect.Type, allowAddr bool) EncoderFunc](#func-newtypeencodert-reflecttype-allowaddr-bool-encoderfunc)
+			- [func intEncoder(e *EncodeState, v reflect.Value)](#func-intencodere-encodestate-v-reflectvalue)
+			- [func (bits floatEncoder) encode(e *EncodeState, v reflect.Value)](#func-bits-floatencoder-encodee-encodestate-v-reflectvalue)
+			- [func newStructEncoder(t reflect.Type) EncoderFunc](#func-newstructencodert-reflecttype-encoderfunc)
+			- [func typeFields(t reflect.Type) structFields](#func-typefieldst-reflecttype-structfields)
+			- [func (se structEncoder) encode(e *EncodeState, v reflect.Value)](#func-se-structencoder-encodee-encodestate-v-reflectvalue)
+			- [func interfaceEncoder(e *EncodeState, v reflect.Value)](#func-interfaceencodere-encodestate-v-reflectvalue)
+	- [单元或集成测试](#单元或集成测试)
+		- [测试代码](#测试代码)
+			- [marshal_test.go](#marshal_testgo)
+			- [encode_test.go](#encode_testgo)
+			- [tags_test.go](#tags_testgo)
+		- [测试结果](#测试结果)
+	- [功能测试](#功能测试)
+		- [测试代码](#测试代码-1)
+		- [测试结果](#测试结果-1)
+	- [总结](#总结)
 
 <!-- /TOC -->
 ## 设计说明
@@ -306,7 +306,7 @@ FieldLoop:
 ```
 
 #### func interfaceEncoder(e *EncodeState, v reflect.Value)
-无论是array、map、还是 interface，本质上都是拆开里面的类型然后使用上面的 typeEncoder 获得解析函数从而进行使用。下面是以 interface 为例子。
+无论是array、map、还是 interface，本质上都是拆开里面的类型然后使用上面的 typeEncoder 获得解析函数从而进行使用。下面是以 interface 为例子。reflectValue 会调用 typeEncoder
 ```go
 // 用于解析interface类型的函数，本质上是获得接口的类型后在调用相应函数
 func interfaceEncoder(e *EncodeState, v reflect.Value) {
