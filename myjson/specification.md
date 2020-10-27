@@ -1,4 +1,33 @@
 # specification
+<!-- TOC -->
+
+- [specification](#specification)
+    - [设计说明](#设计说明)
+        - [设计思路](#设计思路)
+        - [文件](#文件)
+        - [核心功能 JsonMarshal](#核心功能-jsonmarshal)
+        - [函数返回值](#函数返回值)
+        - [核心的设计与实现](#核心的设计与实现)
+            - [func typeEncoder(t reflect.Type) EncoderFunc](#func-typeencodert-reflecttype-encoderfunc)
+            - [func newTypeEncoder(t reflect.Type, allowAddr bool) EncoderFunc](#func-newtypeencodert-reflecttype-allowaddr-bool-encoderfunc)
+            - [func intEncoder(e *EncodeState, v reflect.Value)](#func-intencodere-encodestate-v-reflectvalue)
+            - [func (bits floatEncoder) encode(e *EncodeState, v reflect.Value)](#func-bits-floatencoder-encodee-encodestate-v-reflectvalue)
+            - [func newStructEncoder(t reflect.Type) EncoderFunc](#func-newstructencodert-reflecttype-encoderfunc)
+            - [func typeFields(t reflect.Type) structFields](#func-typefieldst-reflecttype-structfields)
+            - [func (se structEncoder) encode(e *EncodeState, v reflect.Value)](#func-se-structencoder-encodee-encodestate-v-reflectvalue)
+            - [func interfaceEncoder(e *EncodeState, v reflect.Value)](#func-interfaceencodere-encodestate-v-reflectvalue)
+    - [单元或集成测试](#单元或集成测试)
+        - [测试代码](#测试代码)
+            - [marshal_test.go](#marshal_testgo)
+            - [encode_test.go](#encode_testgo)
+            - [tags_test.go](#tags_testgo)
+        - [测试结果](#测试结果)
+    - [功能测试](#功能测试)
+        - [测试代码](#测试代码-1)
+        - [测试结果](#测试结果-1)
+    - [总结](#总结)
+
+<!-- /TOC -->
 ## 设计说明
 ### 设计思路
 本次作业的实现是~~当代码人肉翻译器~~参考官方库的实现，实现了一个**精简版**的结构数据->JSON解析器。
@@ -30,6 +59,14 @@ func JsonMarshal(v interface{}) ([]byte, error) {
 2. 第二个返回值 error 返回的是解析过程中出错的内容，如果没有错误则会返回nil
 
 ### 核心的设计与实现
+1. 首先，经过函数调用到达 typeEncoder，查看缓存是否存在该类型的解析函数。
+2. 若没有，则使用 newTypeEncoder 创建新的解析函数用于缓存。
+3. newTypeEncoder 会通过 reflect.kind 获得类型，从而返回已实现类型的解析函数。
+4. 如果是 struct、map 等类型则要为每个 reflect.type 使用相应方法创建解析函数。
+5. 为 struct 创建解析方法要先使用 typeFields 解析结构体内的（匿名）变量，层次等。
+6. 然后使用 reflect.type 专属的解析函数进行解析。
+7. 结构体/ map /interface 在解析过程中会调用其成员/键值对相应的解析函数进行解析并写到缓冲区中。
+
 
 #### func typeEncoder(t reflect.Type) EncoderFunc
 该函数作为整个程序的核心，根据输入的函数类型来返回一个合适的解析函数。其中，参考官方文档使用了一个map作为缓存，使得已经使用过的 type 不需要再重新生成 EncoderFunc，从而提高性能。操作步骤如下：
@@ -100,7 +137,7 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) EncoderFunc {
 	}
 }
 ```
-下面描述三个典型的 EncoderFunc
+下面描述几个典型的 EncoderFunc
 
 #### func intEncoder(e *EncodeState, v reflect.Value)
 这个函数用于处理 reflect.Int 大类的。EncodeState 中有缓冲区，Write 是 EncodeState 的一个方法，用于将 []byte 写到 EncodeState 的缓冲区中。直接调用 strconv.AppendInt 就可以将 int 写到字节流中。
@@ -111,6 +148,40 @@ func intEncoder(e *EncodeState, v reflect.Value) {
 	e.Write(b)
 }
 ```
+
+#### func (bits floatEncoder) encode(e *EncodeState, v reflect.Value)
+上面 newTypeEncoder 所选择的 float32Encoder 被定义为 (floatEncoder(32)).encode。下面是该方法的实现。该方法通过数据范围，来决定是否采用科学计数法写到缓冲区上。
+```go
+// 用于解析float32和float64的方法
+func (bits floatEncoder) encode(e *EncodeState, v reflect.Value) {
+	f := v.Float()
+	if math.IsInf(f, 0) || math.IsNaN(f) {
+		e.error(&unsupportedValueError{v, strconv.FormatFloat(f, 'g', -1, int(bits))})
+	}
+
+	// 以下决定是否使用科学计数法
+	b := e.scratch[:0]
+	abs := math.Abs(f)
+	fmt := byte('f')
+	if abs != 0 {
+		if bits == 64 && (abs < 1e-6 || abs >= 1e21) || bits == 32 && (float32(abs) < 1e-6 || float32(abs) >= 1e21) {
+			fmt = 'e'
+		}
+	}
+	b = strconv.AppendFloat(b, f, fmt, -1, int(bits))
+	if fmt == 'e' {
+		// 将 e-09 设为 e-9
+		n := len(b)
+		if n >= 4 && b[n-4] == 'e' && b[n-3] == '-' && b[n-2] == '0' {
+			b[n-2] = b[n-1]
+			b = b[:n-1]
+		}
+	}
+
+	e.Write(b)
+}
+```
+
 #### func newStructEncoder(t reflect.Type) EncoderFunc
 新建一个解析器，对于结构体来说，每一种结构体都要新建一个解析方法用于缓存。
 
