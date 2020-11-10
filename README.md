@@ -7,3 +7,4 @@ Blog of ServiceComputing course
 - [第三次博客——编写selpg程序](selpg)
 - [第四次博客——监听INI配置文件](pconfig)
 - [第五次博客——将结构数据解析为JSON格式](myjson)
+- [第六次博客——修改、改进 RxGo 包](RxGo)
