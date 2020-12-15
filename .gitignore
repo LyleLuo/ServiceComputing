@@ -1,0 +1,7 @@
+.ionide/
+.parcel-cache/
+.vscode/
+.idea/
+.vs/
+node_modules/
+dist/

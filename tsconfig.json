@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": false,
+    "strict": true,
+    "jsx": "react"
+  }
+}
