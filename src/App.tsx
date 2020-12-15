@@ -4,6 +4,7 @@ import AppContext, { Context, UserInfo } from './AppContext';
 import Home from './components/home/Home';
 import Layout from './components/layout/Layout';
 import Portal from './components/portal/Portal';
+import Tags from './components/tags/Tags';
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = React.useState<UserInfo>();
@@ -18,7 +19,7 @@ const App: React.FunctionComponent = () => {
               <Home />
             </Route>
             <Route path="/tags">
-              <p>ddd</p>
+              <Tags />
             </Route>
             <Route path="/portal">
               <Portal />
