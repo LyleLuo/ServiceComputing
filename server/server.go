@@ -14,51 +14,56 @@ var Db *sql.DB
 
 func init() {
 	var err error
-	Db, err = sql.Open("mysql", "root:123@tcp(172.18.43.166:3306)/mysql")
+	fmt.Println("connecting to mysql")
+	Db, err = sql.Open("mysql", "root:123@tcp(172.18.43.166:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
-		print("connect error")
-	}
-	if err != nil {
-		print("error")
+		fmt.Println("connect error")
 	} else {
-		print("success")
+		fmt.Println("connected to mysql")
 	}
+	// if err != nil {
+	// 	print("error")
+	// } else {
+	// 	print("success")
+	// }
 
 	Db.SetMaxOpenConns(10)
 	Db.SetMaxIdleConns(10)
-	var name string
-	err = Db.QueryRow("select name from test where test_id = ?", "01").Scan(&name)
-	if err != nil {
-		if err == sql.ErrNoRows { //如果未查询到对应字段则...
-			print("no rows")
-		} else {
-			log.Fatal(err)
-		}
-	}
-	fmt.Println(name)
-	//insert
-	stmt, err1 := Db.Prepare("INSERT INTO test SET name=?")
-	res, err2 := stmt.Exec("test2")
-	if err1 != nil {
-		print("error1")
-	} else {
-		print("success")
-	}
-	if err2 != nil {
-		print("error2", err2)
-	} else {
-		print("success")
-	}
-	if res != nil {
-		print("error")
-	} else {
-		print("success")
-	}
+	// var name string
+	// err = Db.QueryRow("select name from test where test_id = ?", "01").Scan(&name)
+	// if err != nil {
+	// 	if err == sql.ErrNoRows { //如果未查询到对应字段则...
+	// 		print("no rows")
+	// 	} else {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+	// fmt.Println(name)
+	// //insert
+	// stmt, err1 := Db.Prepare("INSERT INTO test SET name=?")
+	// res, err2 := stmt.Exec("test2")
+	// if err1 != nil {
+	// 	print("error1")
+	// } else {
+	// 	print("success")
+	// }
+	// if err2 != nil {
+	// 	print("error2", err2)
+	// } else {
+	// 	print("success")
+	// }
+	// if res != nil {
+	// 	print("error")
+	// } else {
+	// 	print("success")
+	// }
 }
 
 func main() {
+
+	// Init()
 	r := gin.Default()
 
 	//允许跨域访问
@@ -84,17 +89,45 @@ func GetUserName(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	fmt.Println(c.FullPath())
-	username, nameValid := c.GetPostForm("username")
-	password, passwordValid := c.GetPostForm("password")
-	c.JSON(http.StatusOK, gin.H{
-		"status": "success",
-	})
-	if !nameValid || !passwordValid {
-		fmt.Println("get param fail")
+	username, _ := c.GetPostForm("username")
+	password, _ := c.GetPostForm("password")
+	fmt.Println(username)
+	fmt.Println(password)
+
+	id := "not defined"
+	status := "not defined"
+	err := Db.QueryRow("select user_id from user where username = ? and password = ?", username, password).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows { //如果未查询到对应字段则...
+			status = "not found"
+			fmt.Println("not found")
+		} else {
+			status = "failure"
+			fmt.Println("failue")
+			log.Fatal(err)
+		}
 	} else {
-		fmt.Println(username)
-		fmt.Println(password)
+		status = "success"
+		fmt.Println("found")
 	}
+	// fmt.Println(rows)
+	// if rows == nil {
+	// 	status = "not found"
+	// 	fmt.Println("not found")
+	// } else {
+	// 	status = "success"
+	// 	fmt.Println("found")
+	// }
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
+	// if !nameValid || !passwordValid {
+	// 	fmt.Println("get param fail")
+	// } else {
+	// 	// fmt.Println(username)
+	// 	// fmt.Println(password)
+	// }
 }
 
 //跨域访问：cross  origin resource share
