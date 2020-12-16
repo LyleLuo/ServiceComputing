@@ -1,7 +1,12 @@
 import * as React from 'react';
-import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { PrimaryButton, setFocusVisibility, Stack, Text, TextField} from '@fluentui/react';
 import AppContext from '../../AppContext';
+import Register from './Register';
 import axios from 'axios'
+import { useHistory } from "react-router-dom";
+import { render } from 'react-dom';
+import { stat } from 'fs';
+import { connect } from 'http2';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 
@@ -44,6 +49,7 @@ const LoginPost = (name:string, password:string) =>{
   //     console.log("res=>",res);
   //   }
   // ); 
+  status = "not defined";
   axios({
     method:"post",
     url:LoginUrl,
@@ -51,9 +57,12 @@ const LoginPost = (name:string, password:string) =>{
   }).then(
     res=>{
      console.log("res=>",res);
+     status = res["data"]["status"];
+     console.log(status);
     }
   );
 
+  return status == "success" ? true : false;
   // fetch("/login",data,"")
   
   
@@ -63,26 +72,59 @@ const Login: React.FunctionComponent = () => {
   const { setUser } = React.useContext(AppContext);
   const [name, setName] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
+  const [type, setType] = React.useState<string>();
+
+
+  status = "login";
+  // setType("login");
 
   const login = () => {
-    setUser({ id: 1, name: name!, email: name! + "@test.com" })
-    LoginPost(name!,password!);
+    
+    let isSuccess = LoginPost(name!,password!);
+    if(isSuccess){
+      setUser({ id: 1, name: name!, email: name! + "@test.com" });
+    }
+    else{
+      // setType("login failue");
+      console.log("login fail");
+    }
   };
 
-  return <Stack>
-    <Stack.Item>
-      <Text variant="xxLarge">登录账户</Text>
-    </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <TextField label="用户名" defaultValue={name} onChange={(_, v) => setName(v)} />
-    </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <TextField label="密码" canRevealPassword={true} type="password" defaultValue={password} onChange={(_, v) => setPassword(v)} />
-    </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <PrimaryButton text="登录" onClick={login} />
-    </Stack.Item>
-  </Stack >;
+  const JumptoRegister = () => {
+    console.log("register");
+    setType("register");
+    
+  };
+
+  let Content = <Stack>
+  <Stack.Item>
+    <Text variant="xxLarge">登录账户</Text>
+  </Stack.Item>
+  <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <TextField label="用户名" defaultValue={name} onChange={(_, v) => setName(v)} />
+  </Stack.Item>
+  <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <TextField label="密码" canRevealPassword={true} type="password" defaultValue={password} onChange={(_, v) => setPassword(v)} />
+  </Stack.Item>
+  <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <PrimaryButton text="登录" onClick={login} />
+  </Stack.Item>
+  <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <PrimaryButton text="注册" onClick={(JumptoRegister)} />
+  </Stack.Item>
+</Stack >;
+  
+
+  if(type! == "register"){
+    return <Register />;
+  }
+  else{
+    return Content;
+  }
+
+  
 };
+
+
 
 export default Login;
