@@ -48,7 +48,11 @@ const LoginPost = (name:string, password:string) =>{
     method:"post",
     url:LoginUrl,
     data:param
-  });
+  }).then(
+    res=>{
+     console.log("res=>",res);
+    }
+  );
 
   // fetch("/login",data,"")
   
