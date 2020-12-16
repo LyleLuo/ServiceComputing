@@ -23,42 +23,10 @@ func init() {
 	} else {
 		fmt.Println("connected to mysql")
 	}
-	// if err != nil {
-	// 	print("error")
-	// } else {
-	// 	print("success")
-	// }
 
 	Db.SetMaxOpenConns(10)
 	Db.SetMaxIdleConns(10)
-	// var name string
-	// err = Db.QueryRow("select name from test where test_id = ?", "01").Scan(&name)
-	// if err != nil {
-	// 	if err == sql.ErrNoRows { //如果未查询到对应字段则...
-	// 		print("no rows")
-	// 	} else {
-	// 		log.Fatal(err)
-	// 	}
-	// }
-	// fmt.Println(name)
-	// //insert
-	// stmt, err1 := Db.Prepare("INSERT INTO test SET name=?")
-	// res, err2 := stmt.Exec("test2")
-	// if err1 != nil {
-	// 	print("error1")
-	// } else {
-	// 	print("success")
-	// }
-	// if err2 != nil {
-	// 	print("error2", err2)
-	// } else {
-	// 	print("success")
-	// }
-	// if res != nil {
-	// 	print("error")
-	// } else {
-	// 	print("success")
-	// }
+
 }
 
 func main() {
@@ -76,6 +44,7 @@ func main() {
 	{
 		v1.GET("/name", GetUserName)
 		v1.POST("/login", Login)
+		v1.POST("/register", Register)
 	}
 
 	//启动
@@ -87,8 +56,26 @@ func GetUserName(c *gin.Context) {
 	c.String(http.StatusOK, "Faker")
 }
 
+func Register(c *gin.Context) {
+	username, _ := c.GetPostForm("username")
+	password, _ := c.GetPostForm("password")
+	email, _ := c.GetPostForm("email")
+	fmt.Println(username)
+	fmt.Println(password)
+	fmt.Println(email)
+
+	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?)", username, password, email)
+	if err != nil {
+		fmt.Println("err:%s", err)
+	} else {
+		fmt.Println("result:%s", result)
+	}
+	// id, _ := result.LastInsertId()
+	// fmt.Println(id)
+}
+
 func Login(c *gin.Context) {
-	fmt.Println(c.FullPath())
+	// fmt.Println(c.FullPath())
 	username, _ := c.GetPostForm("username")
 	password, _ := c.GetPostForm("password")
 	fmt.Println(username)
@@ -110,24 +97,11 @@ func Login(c *gin.Context) {
 		status = "success"
 		fmt.Println("found")
 	}
-	// fmt.Println(rows)
-	// if rows == nil {
-	// 	status = "not found"
-	// 	fmt.Println("not found")
-	// } else {
-	// 	status = "success"
-	// 	fmt.Println("found")
-	// }
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": status,
 	})
-	// if !nameValid || !passwordValid {
-	// 	fmt.Println("get param fail")
-	// } else {
-	// 	// fmt.Println(username)
-	// 	// fmt.Println(password)
-	// }
+
 }
 
 //跨域访问：cross  origin resource share
