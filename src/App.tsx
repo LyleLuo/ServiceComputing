@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import AppContext, { Context, UserInfo } from './AppContext';
+import AppContext from './AppContext';
 import Home from './components/home/Home';
 import Layout from './components/layout/Layout';
 import Portal from './components/portal/Portal';
 import Tags from './components/tags/Tags';
+import UserInfo from './models/UserInfo';
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = React.useState<UserInfo>();

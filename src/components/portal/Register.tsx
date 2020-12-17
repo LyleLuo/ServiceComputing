@@ -21,7 +21,7 @@ const Register: React.FunctionComponent = () => {
         })
       }
     }
-  }, [registerRequest.data, registerRequest.loading]);
+  }, [registerRequest.loading]);
 
   const Register = () => {
     registerRequest.fire({

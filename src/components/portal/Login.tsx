@@ -24,7 +24,7 @@ const Login: React.FunctionComponent = () => {
         console.log('login failed');
       }
     }
-  }, [loginRequest.data, loginRequest.loading]);
+  }, [loginRequest.loading]);
 
   const login = () => {
     loginRequest.fire({
@@ -37,7 +37,7 @@ const Login: React.FunctionComponent = () => {
     setType("register");
   };
 
-  let Content = <Stack>
+  const Content = <Stack>
     <Stack.Item>
       <Text variant="xxLarge">登录账户</Text>
     </Stack.Item>
