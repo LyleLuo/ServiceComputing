@@ -15,7 +15,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	Db, err = sql.Open("mysql", "root:123@tcp(172.18.43.166:3306)/go")
+	Db, err = sql.Open("mysql", "root:ccj6685533@tcp(172.19.9.94:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
