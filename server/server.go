@@ -191,7 +191,7 @@ func Self(c *gin.Context) {
 		return
 	}
 
-	c.Header("jwt-token", signedToken)
+	c.SetCookie("jwt-token", signedToken, 3600, "/", ".", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":  claims.UserName,
