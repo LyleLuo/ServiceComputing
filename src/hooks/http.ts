@@ -6,15 +6,13 @@ export default function useHttp<T>(endpoint: string, method?: 'POST' | 'PATCH' |
   const [error, setError] = useState<any>();
   const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
-  const fire = (body?: any, headers?: Headers | string[][] | Record<string, string>): void => {
+  const fire = (body?: any, json: boolean = true, headers: Headers | string[][] | Record<string, string> = {}): void => {
     setLoading(true);
     const request: RequestInit = {
-      method: method,
-      body: JSON.stringify(body),
+      method,
+      body: json ? JSON.stringify(body) : body,
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: json ? { 'Content-Type': 'application/json', ...headers } : headers
     };
     fetch(endpoint, request).then(res => {
       setResponseHeaders(res.headers);
@@ -28,6 +26,7 @@ export default function useHttp<T>(endpoint: string, method?: 'POST' | 'PATCH' |
       setLoading(false);
     });
   };
+
 
   return {
     fire,
