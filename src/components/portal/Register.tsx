@@ -1,50 +1,37 @@
 import * as React from 'react';
 import AppContext from '../../AppContext';
 import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
-
-import axios from 'axios'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
-const RegisterUrl = "http://localhost:8080/user/register"
-
-const RegisterPost = (name:string, password:string, email:string) =>{
-    console.log("username:%s",name);
-    console.log("password:%s",password);
-    console.log("email:%s",email);
-    // let data = {"username":name, "password":password};
-    let param = new URLSearchParams();
-    param.append("username",name);
-    param.append("password",password);
-    param.append("email",email);
-    
-    axios({
-      method:"post",
-      url:RegisterUrl,
-      data:param
-    }).then(
-      res=>{
-       console.log("res=>",res);
-      }
-    );
-  
-    
-    
-    
-  };
+import useHttp from '../../hooks/http';
 
 const Register: React.FunctionComponent = () => {
-    const { setUser } = React.useContext(AppContext);
-    const [name, setName] = React.useState<string>();
-    const [password, setPassword] = React.useState<string>();
-    const [email, setEmail] = React.useState<string>();
+  const { setUser } = React.useContext(AppContext);
+  const [name, setName] = React.useState<string>();
+  const [password, setPassword] = React.useState<string>();
+  const [email, setEmail] = React.useState<string>();
+  const registerRequest = useHttp<{ status: string }>('/user/register', 'POST');
 
-    const Register = () => {
-        setUser({ id: -1, name: name!, email: email! })
+  React.useEffect(() => {
+    if (!registerRequest.loading) {
+      if (registerRequest.data?.status === 'success') {
+        console.log('注册成功');
+        setUser!({
+          id: 1,
+          name: name!,
+          email: email!
+        })
+      }
+    }
+  }, [registerRequest.data, registerRequest.loading]);
 
-        RegisterPost(name!,password!,email!);
-    };
+  const Register = () => {
+    registerRequest.fire({
+      username: name,
+      password: password,
+      email: email
+    });
+  };
 
-    return <Stack>
+  return <Stack>
     <Stack.Item>
       <Text variant="xxLarge">注册账户</Text>
     </Stack.Item>

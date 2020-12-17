@@ -1,20 +1,13 @@
 import * as React from 'react';
-
-const emptyFunction = () => { };
-
-export interface UserInfo {
-  id: number;
-  name: string;
-  email: string;
-};
+import UserInfo from './models/UserInfo';
 
 export interface Context {
   user?: UserInfo;
-  setUser: (userInfo?: UserInfo) => void;
+  setUser?: (userInfo?: UserInfo) => void;
   selectedKey?: string;
-  setSelectedKey: (key?: string) => void;
+  setSelectedKey?: (key?: string) => void;
 };
 
-const AppContext = React.createContext<Context>({ setUser: emptyFunction, setSelectedKey: emptyFunction });
+const AppContext = React.createContext<Context>({});
 
 export default AppContext;
