@@ -9,7 +9,7 @@ const Login: React.FunctionComponent = () => {
   const [name, setName] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
   const [type, setType] = React.useState<string>();
-  const loginRequest = useHttp<{ status: string }>('/user/login', 'POST');
+  const loginRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
 
   React.useEffect(() => {
     if (!loginRequest.loading) {
@@ -48,10 +48,14 @@ const Login: React.FunctionComponent = () => {
       <TextField label="密码" canRevealPassword={true} type="password" defaultValue={password} onChange={(_, v) => setPassword(v)} />
     </Stack.Item>
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <PrimaryButton text="登录" onClick={login} />
-    </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <PrimaryButton text="注册" onClick={(JumptoRegister)} />
+      <Stack horizontal>
+        <Stack.Item>
+          <PrimaryButton text="登录" onClick={login} />
+        </Stack.Item>
+        <Stack.Item styles={{ root: { paddingLeft: 10 } }}>
+          <PrimaryButton text="注册" onClick={(JumptoRegister)} />
+        </Stack.Item>
+      </Stack>
     </Stack.Item>
   </Stack >;
 

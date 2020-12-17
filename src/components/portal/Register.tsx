@@ -8,7 +8,7 @@ const Register: React.FunctionComponent = () => {
   const [name, setName] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
   const [email, setEmail] = React.useState<string>();
-  const registerRequest = useHttp<{ status: string }>('/user/register', 'POST');
+  const registerRequest = useHttp<{ status: string }>('/api/user/register', 'POST');
 
   React.useEffect(() => {
     if (!registerRequest.loading) {
@@ -42,7 +42,7 @@ const Register: React.FunctionComponent = () => {
       <TextField label="密码" canRevealPassword={true} type="password" defaultValue={password} onChange={(_, v) => setPassword(v)} />
     </Stack.Item>
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <TextField label="邮箱" canRevealPassword={true} type="email" defaultValue={email} onChange={(_, v) => setEmail(v)} />
+      <TextField label="邮箱" type="email" defaultValue={email} onChange={(_, v) => setEmail(v)} />
     </Stack.Item>
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
       <PrimaryButton text="注册" onClick={Register} />
