@@ -51,14 +51,15 @@ React.useEffect(() => {
     if (myRequest.loading) {
         console.log('加载中...');
     }
-    else {
+    // 判断是否有数据
+    else if (myRequest.data) {
         console.log('请求完毕');
         console.log(myRequest.data);
     }
-}, [myRequest.loading]);
+}, [myRequest.loading, myRequest.data]);
 ```
 
-`useEffect` 像订阅一样，他的第二个参数是一个数组：`[myRequest.loading]`，这表示，当这个数组里面的任何一个状态变化的时候就触发。当请求结束后，`loading` 会变成 `false`，此时就可以触发回调函数，并拿 `data` 里面的数据了。
+`useEffect` 像订阅一样，他的第二个参数是一个数组：`[myRequest.loading, myRequest.data]`，这表示，当这个数组里面的任何一个状态变化的时候就触发。当请求结束后，`loading` 会变成 `false`，`data` 会被设置，此时就可以触发回调函数，并拿 `data` 里面的数据了。
 
 ## React Hooks
 ### useState 和 useEffect
@@ -184,9 +185,9 @@ const Register: React.FunctionComponent = () => {
   // 创建一个 HTTP 请求
   const registerRequest = useHttp<{ status: string }>('/api/user/register', 'POST');
 
-  // 当 registerRequest.loading 发生改变时触发
+  // 当 registerRequest.loading 和 registerRequest.data 发生改变时触发
   React.useEffect(() => {
-    if (!registerRequest.loading) {
+    if (registerRequest.data && !registerRequest.loading) {
       if (registerRequest.data?.status === 'success') {
         console.log('注册成功');
         // 注册成功了于是设置全局状态中的用户信息
@@ -198,7 +199,7 @@ const Register: React.FunctionComponent = () => {
         })
       }
     }
-  }, [registerRequest.loading]);
+  }, [registerRequest.loading, registerRequest.data]);
 
   // 声明一个函数，用来发起注册的请求
   const Register = () => {
