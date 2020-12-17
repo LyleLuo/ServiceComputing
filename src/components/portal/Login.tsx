@@ -9,27 +9,30 @@ const Login: React.FunctionComponent = () => {
   const { setUser } = React.useContext(AppContext);
   const [name, setName] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
-  const [type, setType] = React.useState<string>();
+  const [type, setType] = React.useState("login");
+  const [error, setError] = React.useState<string>();
   const loginRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
   const userInfoRequest = useHttp<UserInfo>('/api/user/self', 'GET');
 
   React.useEffect(() => {
     if (userInfoRequest.data && !userInfoRequest.loading) {
+      console.log(userInfoRequest.data);
       setUser!({
-        id: userInfoRequest.data?.id!,
-        name: userInfoRequest.data?.name!,
-        email: userInfoRequest.data?.email!
+        id: userInfoRequest.data.id!,
+        name: userInfoRequest.data.name!,
+        email: userInfoRequest.data.email!
       });
     }
   }, [userInfoRequest.loading, userInfoRequest.data]);
 
   React.useEffect(() => {
     if (loginRequest.data && !loginRequest.loading) {
-      if (loginRequest.data?.status === 'success') {
+      if (loginRequest.data.status === 'success') {
         userInfoRequest.fire();
+        setError(undefined);
       }
       else {
-        console.log('login failed');
+        setError('登录失败');
       }
     }
   }, [loginRequest.loading, loginRequest.data]);
@@ -65,15 +68,14 @@ const Login: React.FunctionComponent = () => {
         </Stack.Item>
       </Stack>
     </Stack.Item>
+    {
+      error && <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+        <p style={{ color: 'red' }}>{error}</p>
+      </Stack.Item>
+    }
   </Stack >;
 
-
-  if (type! == "register") {
-    return <Register />;
-  }
-  else {
-    return Content;
-  }
+  return type === "register" ? <Register /> : Content;
 };
 
 export default Login;

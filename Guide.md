@@ -134,10 +134,10 @@ const { user, setUser } = React.useContext(AppContext);
 React.useEffect(/* A */() => {
     console.log('我被加载了');
     return /* B */ () => { console.log('我被卸载了') };
-});
+}, []);
 ```
 
-注意到此时不需要给 `React.useEffect` 的第二个参数传入任何东西，只需要定义一个函数 A，然后这个函数 A 最后返回一个函数 B，那么函数 A 就会在组件加载的时候执行，B 就会在组件卸载的时候执行。
+注意到此时不需要给 `React.useEffect` 的第二个参数的数组内放任何东西，只需要定义一个函数 A，然后这个函数 A 最后返回一个函数 B，那么函数 A 就会在组件加载的时候执行，B 就会在组件卸载的时候执行。
 
 ## 数据不变性
 只要不是变量，一律使用 `const` 声明成常量，而不是用 `let`。

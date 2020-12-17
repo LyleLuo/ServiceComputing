@@ -1,21 +1,39 @@
-import useFetch from 'use-http';
+import { useState } from 'react';
 
 export default function useHttp<T>(endpoint: string, method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'GET') {
-  const { post, put, patch, del, get, data, loading, error, response } = useFetch<T>(endpoint);
+  const [data, setData] = useState<T>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<any>();
+  const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
-  const fire = <R extends object>(data?: R): void => {
-    if (method === 'POST') post(data);
-    else if (method === 'PUT') put(data);
-    else if (method === 'PATCH') patch(data);
-    else if (method === 'DELETE') del();
-    else get();
+  const fire = (body?: any, headers?: Headers | string[][] | Record<string, string>): void => {
+    setLoading(true);
+    const request: RequestInit = {
+      method: method,
+      body: JSON.stringify(body),
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    fetch(endpoint, request).then(res => {
+      setResponseHeaders(res.headers);
+      return res.json();
+    }).then(json => {
+      setData(json);
+      setLoading(false);
+    }).catch(err => {
+      setData(undefined);
+      setError(err);
+      setLoading(false);
+    });
   };
 
   return {
     fire,
     data,
     loading,
-    error: error?.message,
-    headers: response.headers
+    error,
+    headers: responseHeaders
   };
 }
