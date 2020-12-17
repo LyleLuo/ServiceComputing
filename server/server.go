@@ -120,7 +120,7 @@ func Register(c *gin.Context) {
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
 	signedToken, err := getToken(claims)
-	c.Header("jwt-token", signedToken)
+	c.SetCookie("jwt-token", signedToken, 3600, "/", ".", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 	})
@@ -151,7 +151,6 @@ func Login(c *gin.Context) {
 	} else {
 		status = "success"
 	}
-
 	claims := &JWTClaims{
 		UserId:   id,
 		UserName: loginInfo.UserName,
@@ -160,8 +159,8 @@ func Login(c *gin.Context) {
 	}
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
-	signedToken, err := getToken(claims)
-	c.Header("jwt-token", signedToken)
+	signedToken, _ := getToken(claims)
+	c.SetCookie("jwt-token", signedToken, 3600, "/", ".", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": status,
@@ -169,7 +168,7 @@ func Login(c *gin.Context) {
 }
 
 func Self(c *gin.Context) {
-	strToken := c.Param("jwt-token")
+	strToken, err := c.Cookie("jwt-token")
 	claims, err := verifyToken(strToken)
 	if err != nil {
 		c.String(401, err.Error())
