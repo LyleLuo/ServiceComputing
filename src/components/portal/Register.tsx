@@ -11,7 +11,7 @@ const Register: React.FunctionComponent = () => {
   const registerRequest = useHttp<{ status: string }>('/api/user/register', 'POST');
 
   React.useEffect(() => {
-    if (!registerRequest.loading) {
+    if (registerRequest.data && !registerRequest.loading) {
       if (registerRequest.data?.status === 'success') {
         console.log('注册成功');
         setUser!({
@@ -21,7 +21,7 @@ const Register: React.FunctionComponent = () => {
         })
       }
     }
-  }, [registerRequest.loading]);
+  }, [registerRequest.loading, registerRequest.data]);
 
   const Register = () => {
     registerRequest.fire({

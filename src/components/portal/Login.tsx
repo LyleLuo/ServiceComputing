@@ -3,6 +3,7 @@ import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import AppContext from '../../AppContext';
 import Register from './Register';
 import useHttp from '../../hooks/http';
+import UserInfo from '../../models/UserInfo';
 
 const Login: React.FunctionComponent = () => {
   const { setUser } = React.useContext(AppContext);
@@ -10,21 +11,28 @@ const Login: React.FunctionComponent = () => {
   const [password, setPassword] = React.useState<string>();
   const [type, setType] = React.useState<string>();
   const loginRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
+  const userInfoRequest = useHttp<UserInfo>('/api/user/self', 'GET');
 
   React.useEffect(() => {
-    if (!loginRequest.loading) {
+    if (userInfoRequest.data && !userInfoRequest.loading) {
+      setUser!({
+        id: userInfoRequest.data?.id!,
+        name: userInfoRequest.data?.name!,
+        email: userInfoRequest.data?.email!
+      });
+    }
+  }, [userInfoRequest.loading, userInfoRequest.data]);
+
+  React.useEffect(() => {
+    if (loginRequest.data && !loginRequest.loading) {
       if (loginRequest.data?.status === 'success') {
-        setUser!({
-          id: 1,
-          name: name!,
-          email: name + '@test.com'
-        });
+        userInfoRequest.fire();
       }
       else {
         console.log('login failed');
       }
     }
-  }, [loginRequest.loading]);
+  }, [loginRequest.loading, loginRequest.data]);
 
   const login = () => {
     loginRequest.fire({
