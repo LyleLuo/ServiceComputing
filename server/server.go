@@ -47,6 +47,7 @@ func main() {
 		v1.POST("/login", Login)
 		v1.POST("/register", Register)
 		v1.GET("/self", Self)
+		v1.POST("/logout", Logout)
 	}
 
 	//启动
@@ -131,6 +132,14 @@ type loginModel struct {
 	Password string `json:"password"`
 }
 
+func Logout(c *gin.Context) {
+	c.SetCookie("jwt-token", "", 0, "/", ".", false, true)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+	})
+}
+
 func Login(c *gin.Context) {
 	var loginInfo loginModel
 	c.Bind(&loginInfo)
@@ -151,6 +160,7 @@ func Login(c *gin.Context) {
 	} else {
 		status = "success"
 	}
+
 	claims := &JWTClaims{
 		UserId:   id,
 		UserName: loginInfo.UserName,
