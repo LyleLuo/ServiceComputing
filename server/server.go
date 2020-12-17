@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -42,9 +44,9 @@ func main() {
 
 	//根据分组设置路由
 	{
-		v1.GET("/name", GetUserName)
 		v1.POST("/login", Login)
 		v1.POST("/register", Register)
+		v1.GET("/self", Self)
 	}
 
 	//启动
@@ -52,8 +54,43 @@ func main() {
 
 }
 
-func GetUserName(c *gin.Context) {
-	c.String(http.StatusOK, "Faker")
+var (
+	Secret     = "service-computing-blogs"
+	ExpireTime = 3600
+)
+
+type JWTClaims struct {
+	jwt.StandardClaims
+	UserId   int64  `json:"userid"`
+	Password string `json:"password"`
+	UserName string `json:"username"`
+	Email    string `json:"email"`
+}
+
+func getToken(claims *JWTClaims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString([]byte(Secret))
+	if err != nil {
+		return "", err
+	}
+	return signedToken, nil
+}
+
+func verifyToken(strToken string) (*JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(strToken, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(Secret), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(*JWTClaims)
+	if !ok {
+		return nil, err
+	}
+	if err := token.Claims.Valid(); err != nil {
+		return nil, err
+	}
+	return claims, nil
 }
 
 type registerModel struct {
@@ -66,13 +103,24 @@ func Register(c *gin.Context) {
 	var registerInfo registerModel
 	c.Bind(&registerInfo)
 
-	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?)", registerInfo.UserName, registerInfo.Password, registerInfo.Email)
+	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?); SELECT user_id", registerInfo.UserName, registerInfo.Password, registerInfo.Email)
+	var id int64
 	if err != nil {
 		fmt.Println("err:%s", err)
 	} else {
-		fmt.Println("result:%s", result)
+		id, _ = result.LastInsertId()
 	}
 
+	claims := &JWTClaims{
+		UserId:   id,
+		UserName: registerInfo.UserName,
+		Password: registerInfo.Password,
+		Email:    registerInfo.Email,
+	}
+	claims.IssuedAt = time.Now().Unix()
+	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
+	signedToken, err := getToken(claims)
+	c.Header("jwt-token", signedToken)
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 	})
@@ -87,9 +135,10 @@ func Login(c *gin.Context) {
 	var loginInfo loginModel
 	c.Bind(&loginInfo)
 
-	id := "not defined"
+	var id int64
+	var email string
 	status := "not defined"
-	err := Db.QueryRow("select user_id from user where username = ? and password = ?", loginInfo.UserName, loginInfo.Password).Scan(&id)
+	err := Db.QueryRow("select user_id, email from user where username = ? and password = ?", loginInfo.UserName, loginInfo.Password).Scan(&id, &email)
 	if err != nil {
 		if err == sql.ErrNoRows { //如果未查询到对应字段则...
 			status = "not found"
@@ -101,11 +150,44 @@ func Login(c *gin.Context) {
 		}
 	} else {
 		status = "success"
-		fmt.Println("found")
 	}
+
+	claims := &JWTClaims{
+		UserId:   id,
+		UserName: loginInfo.UserName,
+		Password: loginInfo.Password,
+		Email:    email,
+	}
+	claims.IssuedAt = time.Now().Unix()
+	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
+	signedToken, err := getToken(claims)
+	c.Header("jwt-token", signedToken)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": status,
+	})
+}
+
+func Self(c *gin.Context) {
+	strToken := c.Param("jwt-token")
+	claims, err := verifyToken(strToken)
+	if err != nil {
+		c.String(401, err.Error())
+		return
+	}
+	claims.ExpiresAt = time.Now().Unix() + (claims.ExpiresAt - claims.IssuedAt)
+	signedToken, err := getToken(claims)
+	if err != nil {
+		c.String(500, err.Error())
+		return
+	}
+
+	c.Header("jwt-token", signedToken)
+
+	c.JSON(http.StatusOK, gin.H{
+		"name":  claims.UserName,
+		"email": claims.Email,
+		"id":    claims.UserId,
 	})
 }
 
