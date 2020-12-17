@@ -56,34 +56,40 @@ func GetUserName(c *gin.Context) {
 	c.String(http.StatusOK, "Faker")
 }
 
-func Register(c *gin.Context) {
-	username, _ := c.GetPostForm("username")
-	password, _ := c.GetPostForm("password")
-	email, _ := c.GetPostForm("email")
-	fmt.Println(username)
-	fmt.Println(password)
-	fmt.Println(email)
+type registerModel struct {
+	UserName string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
 
-	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?)", username, password, email)
+func Register(c *gin.Context) {
+	var registerInfo registerModel
+	c.Bind(&registerInfo)
+
+	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?)", registerInfo.UserName, registerInfo.Password, registerInfo.Email)
 	if err != nil {
 		fmt.Println("err:%s", err)
 	} else {
 		fmt.Println("result:%s", result)
 	}
-	// id, _ := result.LastInsertId()
-	// fmt.Println(id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+	})
+}
+
+type loginModel struct {
+	UserName string `json:"username"`
+	Password string `json:"password"`
 }
 
 func Login(c *gin.Context) {
-	// fmt.Println(c.FullPath())
-	username, _ := c.GetPostForm("username")
-	password, _ := c.GetPostForm("password")
-	fmt.Println(username)
-	fmt.Println(password)
+	var loginInfo loginModel
+	c.Bind(&loginInfo)
 
 	id := "not defined"
 	status := "not defined"
-	err := Db.QueryRow("select user_id from user where username = ? and password = ?", username, password).Scan(&id)
+	err := Db.QueryRow("select user_id from user where username = ? and password = ?", loginInfo.UserName, loginInfo.Password).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows { //如果未查询到对应字段则...
 			status = "not found"
@@ -101,7 +107,6 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": status,
 	})
-
 }
 
 //跨域访问：cross  origin resource share
