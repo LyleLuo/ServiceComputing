@@ -1,10 +1,14 @@
 import * as React from "react";
 import AppContext from "../../AppContext";
-import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import { DefaultButton, PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import useHttp from "../../hooks/http";
 import UserInfo from "../../models/UserInfo";
 
-const Register: React.FunctionComponent = () => {
+export interface RegisterModel {
+  setType: (type: string) => void;
+}
+
+const Register: React.FunctionComponent<RegisterModel> = (props) => {
   const { setUser } = React.useContext(AppContext);
   const [name, setName] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
@@ -36,7 +40,7 @@ const Register: React.FunctionComponent = () => {
     }
   }, [registerRequest.loading, registerRequest.data, registerRequest.ok]);
 
-  const Register = () => {
+  const register = () => {
     registerRequest.fire({
       username: name,
       password: password,
@@ -58,7 +62,14 @@ const Register: React.FunctionComponent = () => {
       <TextField label="邮箱" type="email" defaultValue={email} onChange={(_, v) => setEmail(v)} />
     </Stack.Item>
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-      <PrimaryButton text="注册" onClick={Register} />
+      <Stack horizontal>
+        <Stack.Item>
+          <PrimaryButton text="注册" onClick={(register)} />
+        </Stack.Item>
+        <Stack.Item styles={{ root: { paddingLeft: 10 } }}>
+          <DefaultButton text="登录" onClick={() => props.setType("login")} />
+        </Stack.Item>
+      </Stack>
     </Stack.Item>
     {
       error && <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>

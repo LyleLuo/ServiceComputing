@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import { PrimaryButton, DefaultButton, Stack, Text, TextField } from "@fluentui/react";
 import AppContext from "../../AppContext";
 import Register from "./Register";
 import useHttp from "../../hooks/http";
@@ -44,10 +44,6 @@ const Login: React.FunctionComponent = () => {
     });
   };
 
-  const JumptoRegister = () => {
-    setType("register");
-  };
-
   const Content = <Stack>
     <Stack.Item>
       <Text variant="xxLarge">登录账户</Text>
@@ -64,7 +60,7 @@ const Login: React.FunctionComponent = () => {
           <PrimaryButton text="登录" onClick={login} />
         </Stack.Item>
         <Stack.Item styles={{ root: { paddingLeft: 10 } }}>
-          <PrimaryButton text="注册" onClick={(JumptoRegister)} />
+          <DefaultButton text="注册" onClick={() => setType("register")} />
         </Stack.Item>
       </Stack>
     </Stack.Item>
@@ -75,7 +71,7 @@ const Login: React.FunctionComponent = () => {
     }
   </Stack >;
 
-  return type === "register" ? <Register /> : Content;
+  return type === "register" ? <Register setType={setType} /> : Content;
 };
 
 export default Login;
