@@ -276,7 +276,7 @@ export interface MyProps {
     content: string
 }
 
-const MyComponent: React.FunctionComponent = (props: MyProps) => {
+const MyComponent: React.FunctionComponent<MyProps> = (props) => {
     return <div><p>{props.content}</p></div>;
 }
 ```
