@@ -23,7 +23,7 @@ const Login: React.FunctionComponent = () => {
         email: userInfoRequest.data.email
       });
     }
-  }, [userInfoRequest.loading, userInfoRequest.data, setUser]);
+  }, [userInfoRequest.loading, userInfoRequest.data]);
 
   React.useEffect(() => {
     if (loginRequest.data && !loginRequest.loading) {
@@ -35,7 +35,7 @@ const Login: React.FunctionComponent = () => {
         setError("登录失败");
       }
     }
-  }, [loginRequest.loading, loginRequest.data, userInfoRequest]);
+  }, [loginRequest.loading, loginRequest.data]);
 
   const login = () => {
     loginRequest.fire({

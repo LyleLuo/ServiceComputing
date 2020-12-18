@@ -21,7 +21,7 @@ const Register: React.FunctionComponent = () => {
         email: userInfoRequest.data.email
       });
     }
-  }, [userInfoRequest.loading, userInfoRequest.data, setUser]);
+  }, [userInfoRequest.loading, userInfoRequest.data]);
 
   React.useEffect(() => {
     if (registerRequest.data && !registerRequest.loading) {
@@ -34,7 +34,7 @@ const Register: React.FunctionComponent = () => {
         setError("注册失败");
       }
     }
-  }, [registerRequest.loading, registerRequest.data, userInfoRequest]);
+  }, [registerRequest.loading, registerRequest.data]);
 
   const Register = () => {
     registerRequest.fire({

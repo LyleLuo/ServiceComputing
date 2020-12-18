@@ -14,7 +14,7 @@ const Portal: React.FunctionComponent = () => {
         setUser(undefined);
       }
     }
-  }, [logoutRequest.data, logoutRequest.loading, setUser]);
+  }, [logoutRequest.data, logoutRequest.loading]);
 
   const logout = () => {
     logoutRequest.fire();

@@ -19,3 +19,4 @@ rules:
   indent: ["error", 2]
   quotes: ["error", "double"]
   react/prop-types: [0]
+  react-hooks/exhaustive-deps: [0]

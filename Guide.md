@@ -198,7 +198,7 @@ const Register: React.FunctionComponent = () => {
         })
       }
     }
-  }, [registerRequest.loading, registerRequest.data, setUser]); // 这里之所以有 setUser 是因为 setUser 本身也是一个状态，这个函数里面使用了 setUser 因此也需要包含在依赖里面
+  }, [registerRequest.loading, registerRequest.data]);
 
   // 声明一个函数，用来发起注册的请求
   const Register = () => {
