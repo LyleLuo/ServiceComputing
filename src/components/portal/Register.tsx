@@ -30,11 +30,11 @@ const Register: React.FunctionComponent = () => {
         userInfoRequest.fire();
         setError(undefined);
       }
-      else {
+      else if (registerRequest.data || !registerRequest.ok) {
         setError("注册失败");
       }
     }
-  }, [registerRequest.loading, registerRequest.data]);
+  }, [registerRequest.loading, registerRequest.data, registerRequest.ok]);
 
   const Register = () => {
     registerRequest.fire({

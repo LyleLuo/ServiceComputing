@@ -31,11 +31,11 @@ const Login: React.FunctionComponent = () => {
         userInfoRequest.fire();
         setError(undefined);
       }
-      else {
+      else if (loginRequest.data || !loginRequest.ok) {
         setError("登录失败");
       }
     }
-  }, [loginRequest.loading, loginRequest.data]);
+  }, [loginRequest.loading, loginRequest.data, loginRequest.ok]);
 
   const login = () => {
     loginRequest.fire({
