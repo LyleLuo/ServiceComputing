@@ -307,7 +307,7 @@ return <MyComponent content={state}></MyComponent>
 </Route>
 ```
 
-这个路由有一个叫做 `id` 的参数，那如何在 `Details` 组件中获取这个参数的值呢？答案是使用 `useParam`。
+这个路由有一个叫做 `id` 的参数，那如何在 `Details` 组件中获取这个参数的值呢？答案是使用 `useParams`。
 
 首先定义路由参数的类型：
 
@@ -320,7 +320,7 @@ interface DetailsRouteParam {
 然后就可以使用了：
 
 ```ts
-const { id } = useParam();
+const { id } = useParams<DetailsRouteParam>();
 ```
 
-这样当访问 `/details/123` 的时候，`id` 将变成 123。
+这样当访问 `/details/123` 的时候，`id` 将是 123。
