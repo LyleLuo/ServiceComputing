@@ -7,7 +7,7 @@ const Home: React.FunctionComponent = () => {
   const { user, setUser } = React.useContext(AppContext);
 
   const login = () => {
-    setUser(user ? undefined : {
+    setUser!(user ? undefined : {
       id: 1,
       name: 'user',
       email: 'someone@example.com'

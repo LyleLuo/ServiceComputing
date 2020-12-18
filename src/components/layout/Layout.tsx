@@ -41,7 +41,7 @@ const Layout: React.FunctionComponent = (props) => {
       <NavLink
         to={link.url || (link.forceAnchor ? '#' : '')}
         style={{ textDecoration: 'none', outline: 'transparent', color: 'ButtonText', width: '100%', textAlign: 'left', paddingLeft: 10 }}
-        onClick={() => setSelectedKey(link.key!)}>
+        onClick={() => setSelectedKey!(link.key!)}>
         {link.name}
       </NavLink>
     </ActionButton >;
