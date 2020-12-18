@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import AppContext from "./AppContext";
+import Details from "./components/details/Details";
 import Home from "./components/home/Home";
 import Layout from "./components/layout/Layout";
 import Portal from "./components/portal/Portal";
@@ -36,6 +37,9 @@ const App: React.FunctionComponent = () => {
             </Route>
             <Route path="/portal">
               <Portal />
+            </Route>
+            <Route path="/details/:id">
+              <Details />
             </Route>
           </Switch>
         </Layout>

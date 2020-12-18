@@ -1,16 +1,14 @@
 import * as React from "react";
+import { useParams } from "react-router-dom";
 
-export interface DetailsModel {
-  title: string;
-  content: string;
-  arthor: string;
-  time: Date;
-  tags: string[]
+interface DetailsRouteParam {
+  id?: string
 }
 
-const Details: React.FunctionComponent<DetailsModel> = (props) => {
+const Details: React.FunctionComponent = () => {
+  const { id } = useParams<DetailsRouteParam>();
   return <>
-    <p>{props.title}</p>
+    <p>文章 Id：{id}</p>
   </>;
 };
 
