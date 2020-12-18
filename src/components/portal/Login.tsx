@@ -26,8 +26,8 @@ const Login: React.FunctionComponent = () => {
   }, [userInfoRequest.loading, userInfoRequest.data]);
 
   React.useEffect(() => {
-    if (loginRequest.data && !loginRequest.loading) {
-      if (loginRequest.data.status === "success") {
+    if (!loginRequest.loading) {
+      if (loginRequest.data?.status === "success") {
         userInfoRequest.fire();
         setError(undefined);
       }

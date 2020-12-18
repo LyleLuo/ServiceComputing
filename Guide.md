@@ -187,7 +187,7 @@ const Register: React.FunctionComponent = () => {
 
   // 当 registerRequest.loading 和 registerRequest.data 发生改变时触发
   React.useEffect(() => {
-    if (registerRequest.data && !registerRequest.loading) {
+    if (!registerRequest.loading) {
       if (registerRequest.data?.status === "success" && setUser /* 这里判断一下确保 setUser 不是空的 */) {
         console.log("注册成功");
         // 注册成功了于是设置全局状态中的用户信息

@@ -3,14 +3,18 @@ import { useState } from "react";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" | "PUT" | "DELETE" | "GET") {
   const [data, setData] = useState<T>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>();
+  const [status, setStatus] = useState(0);
+  const [ok, setOk] = useState(true);
   const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fire = (body?: any, json = true, headers: HeadersInit = {}): void => {
     setLoading(true);
+    setOk(false);
+    setStatus(0);
     const request: RequestInit = {
       method,
       body: json ? JSON.stringify(body) : body,
@@ -19,6 +23,8 @@ export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" |
     };
     fetch(endpoint, request).then(res => {
       setResponseHeaders(res.headers);
+      setOk(res.ok);
+      setStatus(res.status);
       return res.json();
     }).then(json => {
       setData(json);
@@ -36,6 +42,8 @@ export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" |
     data,
     loading,
     error,
-    headers: responseHeaders
+    headers: responseHeaders,
+    status,
+    ok
   };
 }

@@ -24,8 +24,8 @@ const Register: React.FunctionComponent = () => {
   }, [userInfoRequest.loading, userInfoRequest.data]);
 
   React.useEffect(() => {
-    if (registerRequest.data && !registerRequest.loading) {
-      if (registerRequest.data.status === "success") {
+    if (!registerRequest.loading) {
+      if (registerRequest.data?.status === "success") {
         console.log("注册成功");
         userInfoRequest.fire();
         setError(undefined);
