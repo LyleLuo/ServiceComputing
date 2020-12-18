@@ -5,10 +5,6 @@ extends:
   - "eslint:recommended"
   - "plugin:react/recommended"
   - "plugin:@typescript-eslint/recommended"
-  - prettier
-  - prettier/@typescript-eslint
-  - prettier/react
-  - plugin:prettier/recommended
   - plugin:react-hooks/recommended
 parser: "@typescript-eslint/parser"
 parserOptions:
@@ -19,12 +15,7 @@ parserOptions:
 plugins:
   - react
   - "@typescript-eslint"
-  - prettier
 rules:
   indent: ["error", 2]
-  linebreak-style: ["error", "unix"]
   quotes: ["error", "double"]
-  semi: ["error", "always"]
   react/prop-types: [0]
-  no-unused-vars: ["warn", { argsIgnorePattern: "^_" }]
-  "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }]

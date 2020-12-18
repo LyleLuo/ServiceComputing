@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
-import AppContext from '../../AppContext';
-import Register from './Register';
-import useHttp from '../../hooks/http';
-import UserInfo from '../../models/UserInfo';
+import * as React from "react";
+import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import AppContext from "../../AppContext";
+import Register from "./Register";
+import useHttp from "../../hooks/http";
+import UserInfo from "../../models/UserInfo";
 
 const Login: React.FunctionComponent = () => {
   const { setUser } = React.useContext(AppContext);
@@ -11,31 +11,31 @@ const Login: React.FunctionComponent = () => {
   const [password, setPassword] = React.useState<string>();
   const [type, setType] = React.useState("login");
   const [error, setError] = React.useState<string>();
-  const loginRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
-  const userInfoRequest = useHttp<UserInfo>('/api/user/self', 'GET');
+  const loginRequest = useHttp<{ status: string }>("/api/user/login", "POST");
+  const userInfoRequest = useHttp<UserInfo>("/api/user/self", "GET");
 
   React.useEffect(() => {
-    if (userInfoRequest.data && !userInfoRequest.loading) {
+    if (userInfoRequest.data && !userInfoRequest.loading && setUser) {
       console.log(userInfoRequest.data);
-      setUser!({
-        id: userInfoRequest.data.id!,
-        name: userInfoRequest.data.name!,
-        email: userInfoRequest.data.email!
+      setUser({
+        id: userInfoRequest.data.id,
+        name: userInfoRequest.data.name,
+        email: userInfoRequest.data.email
       });
     }
-  }, [userInfoRequest.loading, userInfoRequest.data]);
+  }, [userInfoRequest.loading, userInfoRequest.data, setUser]);
 
   React.useEffect(() => {
     if (loginRequest.data && !loginRequest.loading) {
-      if (loginRequest.data.status === 'success') {
+      if (loginRequest.data.status === "success") {
         userInfoRequest.fire();
         setError(undefined);
       }
       else {
-        setError('登录失败');
+        setError("登录失败");
       }
     }
-  }, [loginRequest.loading, loginRequest.data]);
+  }, [loginRequest.loading, loginRequest.data, userInfoRequest]);
 
   const login = () => {
     loginRequest.fire({
@@ -70,7 +70,7 @@ const Login: React.FunctionComponent = () => {
     </Stack.Item>
     {
       error && <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
-        <p style={{ color: 'red' }}>{error}</p>
+        <p style={{ color: "red" }}>{error}</p>
       </Stack.Item>
     }
   </Stack >;

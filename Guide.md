@@ -9,7 +9,7 @@
 HTTP 请求封装在 `hooks/http.ts` 中，使用时只需要引入即可，例如：
 
 ```ts
-import useHttp from '../hooks/http.ts';
+import useHttp from "../hooks/http.ts";
 ```
 
 `useHttp` 用法如下：
@@ -22,10 +22,10 @@ const myRequest = useHttp<响应类型>(请求相对地址, 请求方法);
 interface Response {
     status: string;
 }
-const myRequest = useHttp<Response>('/api/user/login', 'POST');
+const myRequest = useHttp<Response>("/api/user/login", "POST");
 
 // 或者不想声明一个 interface 也可以这样写：
-const myRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
+const myRequest = useHttp<{ status: string }>("/api/user/login", "POST");
 ```
 
 上述的例子表示：创建了一个到 `/user/login` 的 POST 请求，并且这个请求结束后返回的类型是 `Response` 类型的数据。
@@ -34,8 +34,8 @@ const myRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
 
 ```ts
 myRequest.fire({
-    username: 'abaabaaba',
-    password: '1234567'
+    username: "abaabaaba",
+    password: "1234567"
 });
 ```
 
@@ -49,11 +49,11 @@ myRequest.fire({
 React.useEffect(() => {
     // 判断是否已经加载完了
     if (myRequest.loading) {
-        console.log('加载中...');
+        console.log("加载中...");
     }
     // 判断是否有数据
     else if (myRequest.data) {
-        console.log('请求完毕');
+        console.log("请求完毕");
         console.log(myRequest.data);
     }
 }, [myRequest.loading, myRequest.data]);
@@ -93,7 +93,7 @@ React.useEffect(() => {
 ### 全局状态
 程序中可能需要一些全局状态，例如当前的用户信息等等，这些状态需要在多个组件中共享。
 
-首先我们在 `AppContext.tx` 里面定义全局状态所包含的东西。
+首先我们在 `AppContext.tsx` 里面定义全局状态所包含的东西。
 
 例如：
 ```ts
@@ -132,8 +132,8 @@ const { user, setUser } = React.useContext(AppContext);
 
 ```ts
 React.useEffect(/* A */() => {
-    console.log('我被加载了');
-    return /* B */ () => { console.log('我被卸载了') };
+    console.log("我被加载了");
+    return /* B */ () => { console.log("我被卸载了") };
 }, []);
 ```
 
@@ -169,37 +169,36 @@ React.useEffect(/* A */() => {
 以 Register 为例子：
 
 ```tsx
-import * as React from 'react';
-import AppContext from '../../AppContext';
-import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
-import useHttp from '../../hooks/http';
+import * as React from "react";
+import AppContext from "../../AppContext";
+import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
+import useHttp from "../../hooks/http";
 
 // 声明 Register 组件
 const Register: React.FunctionComponent = () => {
   // 获取全局状态中的 setUser
   const { setUser } = React.useContext(AppContext);
   // 创建一系列的状态
-  const [name, setName] = React.useState<string>();
-  const [password, setPassword] = React.useState<string>();
-  const [email, setEmail] = React.useState<string>();
+  const [name, setName] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("");
   // 创建一个 HTTP 请求
-  const registerRequest = useHttp<{ status: string }>('/api/user/register', 'POST');
+  const registerRequest = useHttp<{ status: string }>("/api/user/register", "POST");
 
   // 当 registerRequest.loading 和 registerRequest.data 发生改变时触发
   React.useEffect(() => {
     if (registerRequest.data && !registerRequest.loading) {
-      if (registerRequest.data?.status === 'success') {
-        console.log('注册成功');
+      if (registerRequest.data?.status === "success" && setUser /* 这里判断一下确保 setUser 不是空的 */) {
+        console.log("注册成功");
         // 注册成功了于是设置全局状态中的用户信息
-        setUser!({
-        // 你可能会好奇这里的 '!' 是干什么用的：当你在访问一个可为空的东西的时候，如果你确定它一定不是空的，可以直接用 ! 来取消掉编译期的空安全检查，而不必在使用前通过类似 if (setUser) { setUser(...) } 判断到底是不是为空
+        setUser({
           id: 1,
-          name: name!,
-          email: email!
+          name: name,
+          email: email
         })
       }
     }
-  }, [registerRequest.loading, registerRequest.data]);
+  }, [registerRequest.loading, registerRequest.data, setUser]); // 这里之所以有 setUser 是因为 setUser 本身也是一个状态，这个函数里面使用了 setUser 因此也需要包含在依赖里面
 
   // 声明一个函数，用来发起注册的请求
   const Register = () => {
@@ -270,7 +269,7 @@ return <>
 有的组件可能需要一些参数，例如一个显示文本的组件，需要提供显示的文本作为参数，那么可以通过 `props` 来做到：
 
 ```tsx
-import * as React from 'react';
+import * as React from "react";
 
 export interface MyProps {
     content: string
@@ -297,3 +296,4 @@ return <MyComponent content={state}></MyComponent>
 
 当 state 改变，这个改变也能自动传到 `MyComponent` 里面并自动更新界面，如果在 `MyComponent` 通过 `React.useEffect` 订阅了 `props.content` 的话，该状态改变的时候还能触发你定义的函数。
 
+另外，通过 `props.children` 可以渲染传进来的子组件。

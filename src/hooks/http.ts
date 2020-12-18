@@ -1,18 +1,21 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-export default function useHttp<T>(endpoint: string, method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'GET') {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" | "PUT" | "DELETE" | "GET") {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>();
   const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
-  const fire = (body?: any, json: boolean = true, headers: Headers | string[][] | Record<string, string> = {}): void => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fire = (body?: any, json = true, headers: HeadersInit = {}): void => {
     setLoading(true);
     const request: RequestInit = {
       method,
       body: json ? JSON.stringify(body) : body,
-      credentials: 'include',
-      headers: json ? { 'Content-Type': 'application/json', ...headers } : headers
+      credentials: "include",
+      headers: json ? { "Content-Type": "application/json", ...headers } : headers
     };
     fetch(endpoint, request).then(res => {
       setResponseHeaders(res.headers);

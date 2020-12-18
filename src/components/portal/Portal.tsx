@@ -1,24 +1,24 @@
-import { PrimaryButton } from '@fluentui/react';
-import * as React from 'react';
-import AppContext from '../../AppContext';
-import useHttp from '../../hooks/http';
-import Login from './Login';
+import { PrimaryButton } from "@fluentui/react";
+import * as React from "react";
+import AppContext from "../../AppContext";
+import useHttp from "../../hooks/http";
+import Login from "./Login";
 
 const Portal: React.FunctionComponent = () => {
   const { user, setUser } = React.useContext(AppContext);
-  const logoutRequest = useHttp<{ status: string }>('/api/user/logout', 'POST');
+  const logoutRequest = useHttp<{ status: string }>("/api/user/logout", "POST");
 
   React.useEffect(() => {
     if (logoutRequest.data && !logoutRequest.loading) {
-      if (logoutRequest.data.status === "success") {
-        setUser!(undefined);
+      if (logoutRequest.data.status === "success" && setUser) {
+        setUser(undefined);
       }
     }
-  }, [logoutRequest.data, logoutRequest.loading])
+  }, [logoutRequest.data, logoutRequest.loading, setUser]);
 
   const logout = () => {
     logoutRequest.fire();
-  }
+  };
 
   return user ? <>
     <p>欢迎，{user.name}！</p>

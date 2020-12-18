@@ -1,11 +1,11 @@
-import { PrimaryButton } from '@fluentui/react';
-import * as React from 'react';
+import { PrimaryButton } from "@fluentui/react";
+import * as React from "react";
 
 const Tags: React.FunctionComponent = () => {
   const [test, setTest] = React.useState(1);
 
   React.useEffect(() => {
-    alert('test 被改成 ' + test + ' 了');
+    alert("test 被改成 " + test + " 了");
   }, [test]);
 
   return <>
