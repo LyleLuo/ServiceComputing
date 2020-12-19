@@ -104,7 +104,7 @@ func Register(c *gin.Context) {
 	var registerInfo registerModel
 	c.Bind(&registerInfo)
 
-	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?); SELECT user_id", registerInfo.UserName, registerInfo.Password, registerInfo.Email)
+	result, err := Db.Exec("insert into user (username, password, email) values (?,?,?);", registerInfo.UserName, registerInfo.Password, registerInfo.Email)
 	var id int64
 	if err != nil {
 		fmt.Println("err:%s", err)
