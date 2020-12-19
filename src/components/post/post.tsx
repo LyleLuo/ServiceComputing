@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AppContext from '../../AppContext';
-import Modal from 'react-modal';
+import Modal from '@fluentui/react';
 import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 
 
