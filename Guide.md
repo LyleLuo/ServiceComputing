@@ -335,7 +335,23 @@ return <MyComponent content={state}></MyComponent>
 
 当 state 改变，这个改变也能自动传到 `MyComponent` 里面并自动更新界面，如果在 `MyComponent` 通过 `React.useEffect` 订阅了 `props.content` 的话，该状态改变的时候还能触发你定义的函数。
 
-另外，通过 `props.children` 可以渲染传进来的子组件。
+另外，通过 `props.children` 可以渲染传进来的子组件：
+
+```tsx
+const MyComponent: React.FunctionComponent<MyProps> = (props) => {
+    return <div>{props.children}</div>;
+}
+```
+
+上面这个例子，在 `<div></div>` 中渲染了父组件传进来的子组件，比如父组件这样使用 `MyComponent`：
+
+```tsx
+<MyComponent>
+  <p>hello</p>
+</MyComponent>
+``` 
+
+那这个 `<p>hello</p>` 会作为 `children` 传给 `MyComponent`，于是 `MyComponent` 就产生了 `<div><p>hello</p></div>`。
 
 ## 获取路由参数
 假设你定义了如下路由：
