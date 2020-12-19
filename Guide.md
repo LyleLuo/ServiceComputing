@@ -103,7 +103,7 @@ const [counter, setCounter] = React.useState(0);
 
 ```ts
 React.useEffect(() => {
-    console.log(`counter 改变成了 ${counter}`);
+  console.log(`counter 改变成了 ${counter}`);
 }, [counter]);
 ```
 
@@ -115,6 +115,19 @@ React.useEffect(() => {
 }
 ```
 。
+
+注意，一个状态变化之后，任何引用了这个状态的 UI 会自动使用新的状态更新。例如如果我有：
+
+```tsx
+const XXX = () => {
+  const [counter, setCounter] = React.useState(0);
+  return <><p>现在数到了 {counter}</p><button onClick={() => setCounter(counter + 1)}>加 1</button></>;
+}
+```
+
+如果点击按钮，那么 `onClick` 里会调用 `setCounter` 使得 `counter` 状态改变，界面也会自动随之改变。
+
+这一点适用于状态、全局状态（见下文）、组件参数（见下文）和路由参数（见下文）。
 
 ### 全局状态
 程序中可能需要一些全局状态，例如当前的用户信息等等，这些状态需要在多个组件中共享。
@@ -350,3 +363,31 @@ const { id } = useParams<DetailsRouteParam>();
 ```
 
 这样当访问 `/details/123` 的时候，`id` 将是 123。
+
+## 列表展开
+假设你有一个数组，要怎么样把这个数组里面的东西渲染成 UI 呢？
+
+可以用 `map` 方法：`map` 的作用是依次迭代数组中的每个元素，传递给你指定的函数，然后把它变成函数返回的东西。`map` 的参数是一个函数，这个函数有两个参数：当前的元素和当前的下标。
+
+```tsx
+const list = ["a", "b", "c", "d"];
+
+const Content = <>
+  {
+    list.map((v, i) => {
+      return <p>第 {i} 个元素是：{v}</p>
+    })
+  }
+</>;
+```
+
+上述代码最后 `Content` 会变成：
+
+```tsx
+<>
+  <p>第 0 个元素是：a</p>
+  <p>第 1 个元素是：b</p>
+  <p>第 2 个元素是：c</p>
+  <p>第 3 个元素是：d</p>
+</>
+```
