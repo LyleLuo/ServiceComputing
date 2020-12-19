@@ -19,3 +19,6 @@ yarn start
 ```
 
 然后访问 `http://localhost:3000`
+
+## 编写指南
+[Guide.md](Guide.md)

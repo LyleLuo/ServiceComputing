@@ -1,20 +1,49 @@
-import useFetch from 'use-http';
+import { useState } from "react";
 
-export default function useHttp<T>(endpoint: string, method: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'GET') {
-  const { post, put, patch, del, get, data, loading, error } = useFetch<T>(endpoint);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" | "PUT" | "DELETE" | "GET") {
+  const [data, setData] = useState<T>();
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [error, setError] = useState<any>();
+  const [status, setStatus] = useState(0);
+  const [ok, setOk] = useState(true);
+  const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
-  const fire = <R extends object>(data?: R): void => {
-    if (method === 'POST') post(data);
-    else if (method === 'PUT') put(data);
-    else if (method === 'PATCH') patch(data);
-    else if (method === 'DELETE') del();
-    else get();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fire = (body?: any, json = true, headers: HeadersInit = {}): void => {
+    setLoading(true);
+    setOk(false);
+    setStatus(0);
+    const request: RequestInit = {
+      method,
+      body: json ? JSON.stringify(body) : body,
+      credentials: "include",
+      headers: json ? { "Content-Type": "application/json", ...headers } : headers
+    };
+    fetch(endpoint, request).then(res => {
+      setResponseHeaders(res.headers);
+      setOk(res.ok);
+      setStatus(res.status);
+      return res.json();
+    }).then(json => {
+      setData(json);
+      setLoading(false);
+    }).catch(err => {
+      setData(undefined);
+      setError(err);
+      setLoading(false);
+    });
   };
+
 
   return {
     fire,
     data,
     loading,
-    error: error?.message,
+    error,
+    headers: responseHeaders,
+    status,
+    ok
   };
 }
