@@ -1,18 +1,20 @@
-import { PrimaryButton } from "@fluentui/react";
+import { PrimaryButton,DefaultButton, Stack } from "@fluentui/react";
 import * as React from "react";
+import useHttp from "../../hooks/http";
 
 const Tags: React.FunctionComponent = () => {
-  const [test, setTest] = React.useState(1);
+  const [tag, setTag] = React.useState<string>();
+  
+  
 
-  React.useEffect(() => {
-    alert("test 被改成 " + test + " 了");
-  }, [test]);
+  const Content = 
+  <Stack>
+    <Stack.Item>
+    <DefaultButton text="全部" onClick={() => setTag("register")} />
+    </Stack.Item>
+  </Stack>
 
-  return <>
-    <p>啊吧啊吧</p>
-    <p>现在的 test 是：{test}</p>
-    <PrimaryButton text="修改 test 的值" onClick={() => setTest(test + 1)}></PrimaryButton>
-  </>;
+  return Content;
 };
 
 export default Tags;
