@@ -11,7 +11,7 @@ export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" |
   const [responseHeaders, setResponseHeaders] = useState<Headers>();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fire = (body?: any, json = true, headers: HeadersInit = {}): void => {
+  const fire = (body?: any, json = true, overwriteUrl?: string, headers: HeadersInit = {}): void => {
     setLoading(true);
     setOk(false);
     setStatus(0);
@@ -21,7 +21,7 @@ export default function useHttp<T>(endpoint: string, method?: "POST" | "PATCH" |
       credentials: "include",
       headers: json ? { "Content-Type": "application/json", ...headers } : headers
     };
-    fetch(endpoint, request).then(res => {
+    fetch(overwriteUrl ? overwriteUrl : endpoint, request).then(res => {
       setResponseHeaders(res.headers);
       setOk(res.ok);
       setStatus(res.status);
