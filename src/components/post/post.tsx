@@ -1,6 +1,7 @@
-import * as React from "react";
-import AppContext from "../../AppContext";
-import { PrimaryButton, Stack, Text, TextField, Modal } from "@fluentui/react";
+import * as React from 'react';
+import AppContext from '../../AppContext';
+import Modal from '@fluentui/react';
+import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 
 
 const Post: React.FunctionComponent = () => {
