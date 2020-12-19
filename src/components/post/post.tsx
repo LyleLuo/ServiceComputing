@@ -1,16 +1,15 @@
-import * as React from 'react';
-import AppContext from '../../AppContext';
-import Modal from 'react-modal';
-import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import * as React from "react";
+import AppContext from "../../AppContext";
+import { PrimaryButton, Stack, Text, TextField, Modal } from "@fluentui/react";
 
 
 const Post: React.FunctionComponent = () => {
-    const { user } = React.useContext(AppContext);
-    
-    return <>
-      
+  const { user } = React.useContext(AppContext);
+
+  return <>
+
     faker LOL god forever
-    </>;
-  };
-  
-  export default Post;
+  </>;
+};
+
+export default Post;

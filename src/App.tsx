@@ -8,7 +8,7 @@ import Portal from "./components/portal/Portal";
 import Tags from "./components/tags/Tags";
 import useHttp from "./hooks/http";
 import UserInfo from "./models/UserInfo";
-import Post from './components/post/post'
+import Post from "./components/post/post"
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = React.useState<UserInfo>();
