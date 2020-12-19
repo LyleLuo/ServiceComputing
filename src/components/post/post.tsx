@@ -5,12 +5,12 @@ import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 
 
 const Post: React.FunctionComponent = () => {
-    const { user } = React.useContext(AppContext);
-    
-    return <>
-      
+  const { user } = React.useContext(AppContext);
+
+  return <>
+
     faker LOL god forever
-    </>;
-  };
-  
-  export default Post;
+  </>;
+};
+
+export default Post;
