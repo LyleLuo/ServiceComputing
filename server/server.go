@@ -17,7 +17,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.108.113:3306)/go")
+	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
@@ -48,6 +48,7 @@ func main() {
 		v1.POST("/register", Register)
 		v1.GET("/self", Self)
 		v1.POST("/logout", Logout)
+		// v1.GET("/getTages", GetTages)
 	}
 
 	//启动
