@@ -28,6 +28,14 @@ const navItems: INavLinkGroup[] = [{
       iconProps: {
         iconName: 'Contact'
       }
+    },
+    {
+      name: '发布',
+      url: '/post',
+      key: 'post',
+      iconProps: {
+        iconName: 'Contact'
+      }
     }
   ]
 }];

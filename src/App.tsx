@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import Portal from './components/portal/Portal';
 import Tags from './components/tags/Tags';
 import UserInfo from './models/UserInfo';
+import Post from './components/post/post'
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = React.useState<UserInfo>();
@@ -24,6 +25,9 @@ const App: React.FunctionComponent = () => {
             </Route>
             <Route path="/portal">
               <Portal />
+            </Route>
+            <Route path="/post">
+              <Post />
             </Route>
           </Switch>
         </Layout>

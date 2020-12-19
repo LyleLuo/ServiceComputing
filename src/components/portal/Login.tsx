@@ -12,7 +12,7 @@ const Login: React.FunctionComponent = () => {
   const loginRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
 
   React.useEffect(() => {
-    if (!loginRequest.loading) {
+    if (!loginRequest.loading && type == "login") {
       if (loginRequest.data?.status === 'success') {
         setUser!({
           id: 1,
@@ -21,8 +21,9 @@ const Login: React.FunctionComponent = () => {
         });
       }
       else {
-        console.log('login failed');
+        alert("密码或账号名错误");
       }
+      setType("not defined");
     }
   }, [loginRequest.loading]);
 
@@ -31,6 +32,7 @@ const Login: React.FunctionComponent = () => {
       username: name,
       password: password
     });
+    setType("login");
   };
 
   const JumptoRegister = () => {
