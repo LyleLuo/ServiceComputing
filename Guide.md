@@ -6,17 +6,10 @@
 对于 UI 库的使用，可以参考 https://developer.microsoft.com/en-us/fluentui#/controls/web
 
 ## HTTP 请求
-<<<<<<< HEAD
-HTTP 请求封装在 `api/http.ts` 中，使用时只需要引入即可，例如：
-
-```ts
-import useHttp from '../api/http.ts';
-=======
 HTTP 请求封装在 `hooks/http.ts` 中，使用时只需要引入即可，例如：
 
 ```ts
 import useHttp from "../hooks/http.ts";
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 ```
 
 `useHttp` 用法如下：
@@ -29,15 +22,6 @@ const myRequest = useHttp<响应类型>(请求相对地址, 请求方法);
 interface Response {
     status: string;
 }
-<<<<<<< HEAD
-const myRequest = useHttp<Response>('/api/user/login', 'POST');
-
-// 或者不想声明一个 interface 也可以这样写：
-const myRequest = useHttp<{ status: string }>('/api/user/login', 'POST');
-```
-
-上述的例子表示：创建了一个到 '/user/login' 的 POST 请求，并且这个请求结束后返回的类型是 `Response` 类型的数据。
-=======
 const myRequest = useHttp<Response>("/api/user/login", "POST");
 
 // 或者不想声明一个 interface 也可以这样写：
@@ -45,19 +29,13 @@ const myRequest = useHttp<{ status: string }>("/api/user/login", "POST");
 ```
 
 上述的例子表示：创建了一个到 `/user/login` 的 POST 请求，并且这个请求结束后返回的类型是 `Response` 类型的数据。
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 然后就可以发起请求了：
 
 ```ts
 myRequest.fire({
-<<<<<<< HEAD
-    username: 'abaabaaba',
-    password: '1234567'
-=======
     username: "abaabaaba",
     password: "1234567"
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 });
 ```
 
@@ -71,18 +49,6 @@ myRequest.fire({
 React.useEffect(() => {
     // 判断是否已经加载完了
     if (myRequest.loading) {
-<<<<<<< HEAD
-        console.log('加载中...');
-    }
-    else {
-        console.log('请求完毕');
-        console.log(myRequest.data);
-    }
-}, [myRequest.loading]);
-```
-
-`useEffect` 像订阅一样，他的第二个参数是一个数组：`[myRequest.loading]`，这表示，当这个数组里面的任何一个状态变化的时候就触发。当请求结束后，`loading` 会变成 `false`，此时就可以触发回调函数，并拿 `data` 里面的数据了。
-=======
         console.log("加载中...");
     }
     // 判断是否有数据
@@ -94,7 +60,6 @@ React.useEffect(() => {
 ```
 
 `useEffect` 像订阅一样，他的第二个参数是一个数组：`[myRequest.loading, myRequest.data]`，这表示，当这个数组里面的任何一个状态变化的时候就触发。当请求结束后，`loading` 会变成 `false`，`data` 会被设置，此时就可以触发回调函数，并拿 `data` 里面的数据了。
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 ## React Hooks
 ### useState 和 useEffect
@@ -128,11 +93,7 @@ React.useEffect(() => {
 ### 全局状态
 程序中可能需要一些全局状态，例如当前的用户信息等等，这些状态需要在多个组件中共享。
 
-<<<<<<< HEAD
-首先我们在 `AppContext.tx` 里面定义全局状态所包含的东西。
-=======
 首先我们在 `AppContext.tsx` 里面定义全局状态所包含的东西。
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 例如：
 ```ts
@@ -171,21 +132,12 @@ const { user, setUser } = React.useContext(AppContext);
 
 ```ts
 React.useEffect(/* A */() => {
-<<<<<<< HEAD
-    console.log('我被加载了');
-    return /* B */ () => { console.log('我被卸载了') };
-});
-```
-
-注意到此时不需要给 `React.useEffect` 的第二个参数传入任何东西，只需要定义一个函数 A，然后这个函数 A 最后返回一个函数 B，那么函数 A 就会在组件加载的时候执行，B 就会在组件卸载的时候执行。
-=======
     console.log("我被加载了");
     return /* B */ () => { console.log("我被卸载了") };
 }, []);
 ```
 
 注意到此时不需要给 `React.useEffect` 的第二个参数的数组内放任何东西，只需要定义一个函数 A，然后这个函数 A 最后返回一个函数 B，那么函数 A 就会在组件加载的时候执行，B 就会在组件卸载的时候执行。
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 ## 数据不变性
 只要不是变量，一律使用 `const` 声明成常量，而不是用 `let`。
@@ -217,45 +169,16 @@ React.useEffect(/* A */() => {
 以 Register 为例子：
 
 ```tsx
-<<<<<<< HEAD
-import * as React from 'react';
-import AppContext from '../../AppContext';
-import { PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
-import useHttp from '../../hooks/http';
-=======
 import * as React from "react";
 import AppContext from "../../AppContext";
 import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 import useHttp from "../../hooks/http";
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 // 声明 Register 组件
 const Register: React.FunctionComponent = () => {
   // 获取全局状态中的 setUser
   const { setUser } = React.useContext(AppContext);
   // 创建一系列的状态
-<<<<<<< HEAD
-  const [name, setName] = React.useState<string>();
-  const [password, setPassword] = React.useState<string>();
-  const [email, setEmail] = React.useState<string>();
-  // 创建一个 HTTP 请求
-  const registerRequest = useHttp<{ status: string }>('/api/user/register', 'POST');
-
-  // 当 registerRequest.loading 发生改变时触发
-  React.useEffect(() => {
-    if (!registerRequest.loading) {
-      if (registerRequest.data?.status === 'success') {
-        console.log('注册成功');
-        // 注册成功了于是设置全局状态中的用户信息
-        setUser!({
-          id: 1,
-          name: name!,
-          email: email!
-        })
-      }
-    }
-  }, [registerRequest.loading]);
-=======
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -276,7 +199,6 @@ const Register: React.FunctionComponent = () => {
       }
     }
   }, [registerRequest.loading, registerRequest.data]);
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
   // 声明一个函数，用来发起注册的请求
   const Register = () => {
@@ -347,21 +269,13 @@ return <>
 有的组件可能需要一些参数，例如一个显示文本的组件，需要提供显示的文本作为参数，那么可以通过 `props` 来做到：
 
 ```tsx
-<<<<<<< HEAD
-import * as React from 'react';
-=======
 import * as React from "react";
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
 
 export interface MyProps {
     content: string
 }
 
-<<<<<<< HEAD
-const MyComponent: React.FunctionComponent = (props: MyProps) => {
-=======
 const MyComponent: React.FunctionComponent<MyProps> = (props) => {
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
     return <div><p>{props.content}</p></div>;
 }
 ```
@@ -382,8 +296,6 @@ return <MyComponent content={state}></MyComponent>
 
 当 state 改变，这个改变也能自动传到 `MyComponent` 里面并自动更新界面，如果在 `MyComponent` 通过 `React.useEffect` 订阅了 `props.content` 的话，该状态改变的时候还能触发你定义的函数。
 
-<<<<<<< HEAD
-=======
 另外，通过 `props.children` 可以渲染传进来的子组件。
 
 ## 获取路由参数
@@ -412,4 +324,3 @@ const { id } = useParams<DetailsRouteParam>();
 ```
 
 这样当访问 `/details/123` 的时候，`id` 将是 123。
->>>>>>> b9de7854c1ff7c1ef9bcb7a80470805e31856865
