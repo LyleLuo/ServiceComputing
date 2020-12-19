@@ -61,6 +61,32 @@ React.useEffect(() => {
 
 `useEffect` 像订阅一样，他的第二个参数是一个数组：`[myRequest.loading, myRequest.data]`，这表示，当这个数组里面的任何一个状态变化的时候就触发。当请求结束后，`loading` 会变成 `false`，`data` 会被设置，此时就可以触发回调函数，并拿 `data` 里面的数据了。
 
+当然，如果你觉得我写的 `useHttp` 不好用的话，也可以直接用 `fetch` 函数做请求，例如：
+
+```ts
+// 一个 GET 请求的例子
+fetch("/api/xxxx", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      });
+
+// 一个 POST 请求的例子
+fetch("/api/xxxx", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: "test", password: "123456" })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+      });
+```
+
 ## React Hooks
 ### useState 和 useEffect
 页面中可能会有很多的状态，例如一个计数器页面，则需要一个 counter 变量保存当前数到的数字。
