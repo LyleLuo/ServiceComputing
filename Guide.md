@@ -391,11 +391,13 @@ const list = ["a", "b", "c", "d"];
 const Content = <>
   {
     list.map((v, i) => {
-      return <p>第 {i} 个元素是：{v}</p>
+      return <p key={i}>第 {i} 个元素是：{v}</p>
     })
   }
 </>;
 ```
+
+要注意 `map` 返回的每个最外层元素需要带一个 `key`，通过这个 `key` 可以告诉 React 哪些数据变化了需要重新渲染，而没有变化的数据就不会更新 UI，这样可以减少不必要的计算，上面的例子用了数组下标 `i` 作为 `key`。
 
 上述代码最后 `Content` 会变成：
 
