@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -143,22 +145,75 @@ func Logout(c *gin.Context) {
 }
 
 type blogModel struct {
-	title  string   `json:"title"`
-	author string   `json:"author"`
-	tags   []string `json:"tags"`
-	text   string   `json:text`
+	title     string   `json:"title"`
+	author_id int      `json:"author_id"`
+	tags      []string `json:"tags"`
+	text      string   `json:text`
 }
 
 func Post(c *gin.Context) {
-	var blogInfo blogModel
-	c.Bind(&blogInfo)
-	fmt.Println("title:", blogInfo.title)
-	fmt.Println("author:", blogInfo.author)
-	fmt.Println("tags:", blogInfo.tags)
-	fmt.Println("text:", blogInfo.text)
+	// var blogInfo blogModel
+	// c.ShouldBind(&blogInfo)
+	// fmt.Println("title:", blogInfo.title)
+	// fmt.Println("author:", blogInfo.author)
+	// fmt.Println("tags:", blogInfo.tags)
+	// fmt.Println("text:", blogInfo.text)
+
+	data, _ := ioutil.ReadAll(c.Request.Body)
+	blogInfo := make(map[string]interface{})
+	if err := json.Unmarshal(data, &blogInfo); err != nil {
+		fmt.Println("error")
+	}
+
+	title := blogInfo["title"]
+	author_id := blogInfo["author_id"]
+	tags := blogInfo["tags"].([]interface{})
+	text := blogInfo["text"]
+
+	fmt.Println("title:", title)
+	fmt.Println("author_id:", author_id)
+	fmt.Print("tags:")
+
+	for i := 0; i < len(tags); i++ {
+		fmt.Print(" ", tags[i])
+	}
+	fmt.Println()
+	fmt.Println("text:", text)
+
+	result, err := Db.Exec("insert into blog (author_id, title, text) values (?,?,?);", author_id, title, text)
+	var blog_id int64
+	if err != nil {
+		fmt.Println("err:%s", err)
+	} else {
+		blog_id, _ = result.LastInsertId()
+	}
+
+	for i := 0; i < len(tags); i++ {
+		tag := tags[i]
+		var tag_id int64
+		err = Db.QueryRow("select tag_id from tag where tag_name = ?", tag).Scan(&tag_id)
+		if err != nil {
+			if err == sql.ErrNoRows { //如果未查询到对应字段则...
+				result, err = Db.Exec("insert into tag (tag_name) values (?);", tag)
+				if err != nil {
+					fmt.Println("err:%s", err)
+				} else {
+					tag_id, _ = result.LastInsertId()
+				}
+			} else {
+				fmt.Println("failue")
+				log.Fatal(err)
+			}
+		} else {
+			result, err = Db.Exec("insert into tag_blog (tag_id, blog_id) values (?,?);", tag_id, blog_id)
+		}
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
+		"Data": map[string]interface{}{
+			"blog_id": blog_id,
+		},
 	})
 
 }
