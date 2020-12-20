@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -48,6 +50,9 @@ func main() {
 		v1.POST("/register", Register)
 		v1.GET("/self", Self)
 		v1.POST("/logout", Logout)
+		v1.POST("/post", Post)
+		v1.GET("/tags", Tags)
+		v1.POST("/portal", MY)
 		// v1.GET("/getTages", GetTages)
 	}
 
@@ -142,6 +147,80 @@ func Logout(c *gin.Context) {
 	})
 }
 
+type blogModel struct {
+	title     string   `json:"title"`
+	author_id int      `json:"author_id"`
+	tags      []string `json:"tags"`
+	text      string   `json:text`
+}
+
+func Post(c *gin.Context) {
+	// var blogInfo blogModel
+	// c.ShouldBind(&blogInfo)
+	// fmt.Println("title:", blogInfo.title)
+	// fmt.Println("author:", blogInfo.author)
+	// fmt.Println("tags:", blogInfo.tags)
+	// fmt.Println("text:", blogInfo.text)
+
+	data, _ := ioutil.ReadAll(c.Request.Body)
+	blogInfo := make(map[string]interface{})
+	if err := json.Unmarshal(data, &blogInfo); err != nil {
+		fmt.Println("error")
+	}
+
+	title := blogInfo["title"]
+	author_id := blogInfo["author_id"]
+	tags := blogInfo["tags"].([]interface{})
+	text := blogInfo["text"]
+
+	fmt.Println("title:", title)
+	fmt.Println("author_id:", author_id)
+	fmt.Print("tags:")
+
+	for i := 0; i < len(tags); i++ {
+		fmt.Print(" ", tags[i])
+	}
+	fmt.Println()
+	fmt.Println("text:", text)
+
+	result, err := Db.Exec("insert into blog (author_id, title, text) values (?,?,?);", author_id, title, text)
+	var blog_id int64
+	if err != nil {
+		fmt.Println("err:%s", err)
+	} else {
+		blog_id, _ = result.LastInsertId()
+	}
+
+	for i := 0; i < len(tags); i++ {
+		tag := tags[i]
+		var tag_id int64
+		err = Db.QueryRow("select tag_id from tag where tag_name = ?", tag).Scan(&tag_id)
+		if err != nil {
+			if err == sql.ErrNoRows { //如果未查询到对应字段则...
+				result, err = Db.Exec("insert into tag (tag_name) values (?);", tag)
+				if err != nil {
+					fmt.Println("err:%s", err)
+				} else {
+					tag_id, _ = result.LastInsertId()
+				}
+			} else {
+				fmt.Println("failue")
+				log.Fatal(err)
+			}
+		} else {
+			result, err = Db.Exec("insert into tag_blog (tag_id, blog_id) values (?,?);", tag_id, blog_id)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"Data": map[string]interface{}{
+			"blog_id": blog_id,
+		},
+	})
+
+}
+
 func Login(c *gin.Context) {
 	var loginInfo loginModel
 	c.Bind(&loginInfo)
@@ -199,6 +278,73 @@ func Self(c *gin.Context) {
 		"name":  claims.UserName,
 		"email": claims.Email,
 		"id":    claims.UserId,
+	})
+}
+
+type Tag struct {
+	Id      int    `json:"id"`
+	Tagname string `json:"tagname"`
+}
+
+func getTags() (tags []Tag, err error) {
+	rows, err := Db.Query("SELECT tag_id,tag_name FROM tag")
+	for rows.Next() {
+		var tag1 Tag
+		//遍历表中所有行的信息
+		rows.Scan(&tag1.Id, &tag1.Tagname)
+		//将user添加到users中
+		tags = append(tags, tag1)
+	}
+	return
+}
+
+func Tags(c *gin.Context) {
+	tags, err := getTags()
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": tags,
+		"count":  len(tags),
+	})
+}
+
+type Blog struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+}
+
+func getMY(user_id int) (blogs []Blog, err error) {
+	print("%d", user_id)
+	rows, err := Db.Query("SELECT blog_id,title FROM blog WHERE author_id = ?", 2)
+	//print("%d", len(rows))
+	for rows.Next() {
+		var blog Blog
+		//遍历表中所有行的信息
+		rows.Scan(&blog.Id, &blog.Title)
+		//将user添加到users中
+		blogs = append(blogs, blog)
+	}
+	return
+}
+
+type my_id struct {
+	Author_id int `json:"author_id"`
+}
+
+func MY(c *gin.Context) {
+	author_id := c.PostForm("author_id")
+	print(author_id)
+	i, err := strconv.Atoi(author_id)
+	blogs, err := getMY(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": blogs,
+		"count":  len(blogs),
 	})
 }
 
