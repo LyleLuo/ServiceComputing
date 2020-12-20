@@ -26,7 +26,7 @@ const Post: React.FunctionComponent = () => {
       method:"POST",
       credentials:"include",
       headers:{ "Content-Type": "application/json" },
-      body:JSON.stringify({title:"SKT",author:"faker",tags:["LOL"],text:"I am faker"})
+      body:JSON.stringify({title:title,author_id:user ? user.id : "faker",tags:tags,text:text})
     }).then(res=>res.json()).then(data => {
       console.log(data);
     })
