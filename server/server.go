@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -51,6 +52,8 @@ func main() {
 		v1.GET("/self", Self)
 		v1.POST("/logout", Logout)
 		v1.POST("/post", Post)
+		v1.GET("/tags", Tags)
+		v1.POST("/portal", MY)
 		// v1.GET("/getTages", GetTages)
 	}
 
@@ -275,6 +278,73 @@ func Self(c *gin.Context) {
 		"name":  claims.UserName,
 		"email": claims.Email,
 		"id":    claims.UserId,
+	})
+}
+
+type Tag struct {
+	Id      int    `json:"id"`
+	Tagname string `json:"tagname"`
+}
+
+func getTags() (tags []Tag, err error) {
+	rows, err := Db.Query("SELECT tag_id,tag_name FROM tag")
+	for rows.Next() {
+		var tag1 Tag
+		//遍历表中所有行的信息
+		rows.Scan(&tag1.Id, &tag1.Tagname)
+		//将user添加到users中
+		tags = append(tags, tag1)
+	}
+	return
+}
+
+func Tags(c *gin.Context) {
+	tags, err := getTags()
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": tags,
+		"count":  len(tags),
+	})
+}
+
+type Blog struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+}
+
+func getMY(user_id int) (blogs []Blog, err error) {
+	print("%d", user_id)
+	rows, err := Db.Query("SELECT blog_id,title FROM blog WHERE author_id = ?", 2)
+	//print("%d", len(rows))
+	for rows.Next() {
+		var blog Blog
+		//遍历表中所有行的信息
+		rows.Scan(&blog.Id, &blog.Title)
+		//将user添加到users中
+		blogs = append(blogs, blog)
+	}
+	return
+}
+
+type my_id struct {
+	Author_id int `json:"author_id"`
+}
+
+func MY(c *gin.Context) {
+	author_id := c.PostForm("author_id")
+	print(author_id)
+	i, err := strconv.Atoi(author_id)
+	blogs, err := getMY(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": blogs,
+		"count":  len(blogs),
 	})
 }
 
