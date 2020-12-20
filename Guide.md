@@ -380,6 +380,14 @@ const { id } = useParams<DetailsRouteParam>();
 
 这样当访问 `/details/123` 的时候，`id` 将是 123。
 
+另外，可以通过 `:id?` 表示一个可以不指定的路由参数，比如用 `/details/:id?`，则直接访问 `/details` 也能命中路由，只不过这个时候 `id` 就是 `undefined` 了，对应的你就需要这么声明路由参数的类型：
+
+```ts
+interface DetailsRouteParam {
+  id?: string
+}
+```
+
 ## 列表展开
 假设你有一个数组，要怎么样把这个数组里面的东西渲染成 UI 呢？
 
@@ -408,4 +416,70 @@ const Content = <>
   <p>第 2 个元素是：c</p>
   <p>第 3 个元素是：d</p>
 </>
+```
+
+## 页面导航
+如果想要通过一个按钮把切换当前的地址到其他地址要怎么做呢？可以用 `NavLink`，`to` 指定跳转到的地址：
+
+单独使用：
+```tsx
+<NavLink to="/abc">转到 abc</NavLink>
+```
+
+上面的代码会产生一个超链接，点击之后会跳转到 `/abc`。
+
+```tsx
+import { NavLink } from "react-router-dom";
+
+const XXX = () => {
+  const { page } = useParams<>();
+  return <PrimaryButton>
+    // 这里的 style 是为了消除下划线和字体的颜色
+    <NavLink style={{ textDecoration: "none", color: "white" }} to="/abc">转到 abc</NavLink>
+  </PrimaryButton>;
+}
+```
+
+上面的代码会生成一个按钮，然后点击后会跳转到 `/abc`。
+
+假设你有一个需要分页的页面，然后你的路由定义是 `/article/:page?`，也就是有一个 `page` 路由参数决定当前是哪一页（`/article/1` 就是第一页，`/article/2` 就是第二页，`:page?` 的 `?` 表示这个参数可以不指定，可以直接访问 `/article`，此时 `page` 将是 `undefined`）
+
+那么你可以写：
+
+```tsx
+const XXX = () => {
+  const { page } = useParams<{ page?: string }>();
+  return <>
+  <p>现在是第 {page} 页</p>
+  <PrimaryButton>
+    // `...` 括起来的字符串可以用 ${...} 嵌入表达式的值。
+    <NavLink style={{ textDecoration: "none", color: "white" }} to={`/article/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
+  </PrimaryButton></>;
+}
+```
+
+这样点击按钮之后就到下一页了。
+
+另外，如果你用 `React.useEffect` 订阅 `page` 的更改的话，就可以做到翻页后加载新的数据了：
+
+```tsx
+// 新建一个状态用来保存当前文章列表
+const [articles, setArticles] = React.useState<ArticleModel[]>();
+
+React.useEffect(() => {
+  // 如果 page 是空那默认第一页
+  const currentPage = page ? page : "1";
+  fetch(`/api/article/${currentPage}`, .....)
+  .then(res => res.json())
+  .then(data => {
+    // 用请求回来的数据更新文章列表
+    setArticles(data);
+  })
+}, [page])
+
+return <>
+  {
+    articles.map((v, i) => <div key={i}><p>标题：{v.title} ......</p></div>)
+  }
+</>;
 ```
