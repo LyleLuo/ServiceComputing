@@ -35,3 +35,7 @@ sudo chmod +x install.sh
   * ip: sc-database.mysql.database.azure.com
   * 用户名：mysql
   * 密码：ServiceComputing2020
+
+## 部署方式
+
+* 
