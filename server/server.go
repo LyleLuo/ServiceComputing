@@ -48,6 +48,7 @@ func main() {
 		v1.POST("/register", Register)
 		v1.GET("/self", Self)
 		v1.POST("/logout", Logout)
+		v1.POST("/post", Post)
 		// v1.GET("/getTages", GetTages)
 	}
 
@@ -139,6 +140,27 @@ func Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 	})
+}
+
+type blogModel struct {
+	title  string   `json:"title"`
+	author string   `json:"author"`
+	tags   []string `json:"tags"`
+	text   string   `json:text`
+}
+
+func Post(c *gin.Context) {
+	var blogInfo blogModel
+	c.Bind(&blogInfo)
+	fmt.Println("title:", blogInfo.title)
+	fmt.Println("author:", blogInfo.author)
+	fmt.Println("tags:", blogInfo.tags)
+	fmt.Println("text:", blogInfo.text)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+	})
+
 }
 
 func Login(c *gin.Context) {

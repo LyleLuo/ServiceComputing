@@ -19,7 +19,7 @@ sudo chmod +x install.sh
 
 ## 部署方式
 
-将该仓库放到`$GOPATH/src/github.com/user/`下，cd到`server`下执行`go run main.go`
+将该仓库放到`$GOPATH/src/github.com/user/`下，cd到`server`下执行`go run server.go`
 
 ## 注意事项
 
