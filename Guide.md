@@ -469,7 +469,7 @@ const [articles, setArticles] = React.useState<ArticleModel[]>();
 React.useEffect(() => {
   // 如果 page 是空那默认第一页
   const currentPage = page ? page : "1";
-  fetch(`/api/article/${page}`, .....)
+  fetch(`/api/article/${currentPage}`, .....)
   .then(res => res.json())
   .then(data => {
     // 用请求回来的数据更新文章列表
