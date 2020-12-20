@@ -459,3 +459,27 @@ const XXX = () => {
 ```
 
 这样点击按钮之后就到下一页了。
+
+另外，如果你用 `React.useEffect` 订阅 `page` 的更改的话，就可以做到翻页后加载新的数据库了：
+
+```tsx
+// 新建一个状态用来保存当前文章列表
+const [articles, setArticles] = React.useState<ArticleModel[]>();
+
+React.useEffect(() => {
+  // 如果 page 是空那默认第一页
+  const currentPage = page ? page : "1";
+  fetch(`/api/article/${page}`, .....)
+  .then(res => res.json())
+  .then(data => {
+    // 用请求回来的数据更新文章列表
+    setArticles(data);
+  })
+}, [page])
+
+return <>
+  {
+    articles.map((v, i) => <div key={i}><p>标题：{v.title} ......</p></div>)
+  }
+</>;
+```
