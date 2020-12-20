@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -17,7 +18,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
+	Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
@@ -32,7 +33,6 @@ func init() {
 }
 
 func main() {
-
 	// Init()
 	r := gin.Default()
 
@@ -51,6 +51,7 @@ func main() {
 		// v1.GET("/getTages", GetTages)
 	}
 
+	r.GET("/page/:id", Page)
 	//启动
 	r.Run() // listen and serve on 0.0.0.0:8080
 
@@ -221,4 +222,64 @@ func CrosHandler() gin.HandlerFunc {
 		//处理请求
 		context.Next()
 	}
+}
+
+func getJSON(sqlString string) ([]map[string]interface{}, error) {
+	rows, err := Db.Query(sqlString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	count := len(columns)
+	tableData := make([]map[string]interface{}, 0)
+	values := make([]interface{}, count)
+	valuePtrs := make([]interface{}, count)
+	for rows.Next() {
+		for i := 0; i < count; i++ {
+			valuePtrs[i] = &values[i]
+		}
+		rows.Scan(valuePtrs...)
+		entry := make(map[string]interface{})
+		for i, col := range columns {
+			var v interface{}
+			val := values[i]
+			b, ok := val.([]byte)
+			if ok {
+				v = string(b)
+			} else {
+				v = val
+			}
+			entry[col] = v
+		}
+		tableData = append(tableData, entry)
+	}
+	return tableData, nil
+}
+
+func Page(c *gin.Context) {
+	id, covErr := strconv.Atoi(c.Param("id"))
+	result, err := getJSON("select blog_id, username, title from blog, user where blog.author_id=user.user_id;")
+	status := "undefined"
+	itemPerPage := 3
+	start := (id - 1) * itemPerPage
+	last := id * itemPerPage
+	if id*itemPerPage > len(result) {
+		last = len(result)
+	}
+
+	if err != nil || covErr != nil || id < 1 || (id-1)*itemPerPage >= len(result) {
+		status = "fail"
+		start, last = 0, 0
+	} else {
+		status = "success"
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"data":   result[start:last],
+	})
 }
