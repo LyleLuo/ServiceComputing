@@ -363,7 +363,7 @@ func getMY(user_id int) (blogs []Blog, err error) {
 }
 
 type myID struct {
-	AuthorID string `json:"author_id"`
+	AuthorID int `json:"author_id"`
 }
 
 func MY(c *gin.Context) {
@@ -374,8 +374,7 @@ func MY(c *gin.Context) {
 	// 	print(err)
 	// }
 	print("id is:", id.AuthorID)
-	i, err := strconv.Atoi(id.AuthorID)
-	blogs, err := getMY(i)
+	blogs, err := getMY(id.AuthorID)
 	if err != nil {
 		log.Fatal(err)
 	}
