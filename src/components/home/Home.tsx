@@ -31,13 +31,13 @@ const Home: React.FunctionComponent = () => {
     })
       .then(res => {
         if (!res.ok) {
-          throw "failed to fetch"
-        } 
+          throw "failed to fetch";
+        }
         return res.json();
       })
       .then(data => {
         if (data.status === "success") {
-          console.log(data)
+          console.log(data);
           setList(data.data);
         } else {
           alert("failed to load");
@@ -48,18 +48,18 @@ const Home: React.FunctionComponent = () => {
       });
   }, []);
 
-  return list? <>
-    
+  return list ? <>
+
     <Stack>
-      { 
+      {
         list.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-              <p>Title: {v.title}</p>
-              <p>Author: {v.username}</p>
-              <PrimaryButton>
-                <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
-              </PrimaryButton>
-              <hr/>
+            <p>Title: {v.title}</p>
+            <p>Author: {v.username}</p>
+            <PrimaryButton>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+            </PrimaryButton>
+            <hr />
           </Stack.Item>;
         })
       }
@@ -67,7 +67,7 @@ const Home: React.FunctionComponent = () => {
     <PrimaryButton>
       <NavLink style={{ textDecoration: "none", color: "white" }} to={`/page/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
     </PrimaryButton>
-  </>:<p>loading...</p>
+  </> : <p>loading...</p>;
 };
 
 export default Home;

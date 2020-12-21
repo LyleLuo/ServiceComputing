@@ -1,7 +1,7 @@
-import { ActionButton, PrimaryButton, Stack } from "@fluentui/react";
+import { PrimaryButton, Stack } from "@fluentui/react";
 import * as React from "react";
 import AppContext from "../../AppContext";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useHttp from "../../hooks/http";
 import Login from "./Login";
 
@@ -12,13 +12,13 @@ interface ArticleModel {
 
 const Portal: React.FunctionComponent = () => {
   const { user, setUser } = React.useContext(AppContext);
-  const logoutRequest = useHttp<{ status: string }>("/api/user/logout", "POST");
+  const logoutRequest = useHttp<{ status: string; }>("/api/user/logout", "POST");
   const [list, setList] = React.useState<ArticleModel[]>();
 
   React.useEffect(() => {
     if (logoutRequest.data && !logoutRequest.loading) {
       if (logoutRequest.data.status === "success" && setUser) {
-        setUser(undefined);  
+        setUser(undefined);
       }
     }
   }, [logoutRequest.data, logoutRequest.loading]);
@@ -32,19 +32,19 @@ const Portal: React.FunctionComponent = () => {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ author_id: user?.id})
+      body: JSON.stringify({ author_id: user?.id })
     })
       .then(res => {
         if (!res.ok) {
-          throw "failed to fetch"
-        } 
+          throw "failed to fetch";
+        }
         return res.json();
       })
       .then(data => {
-     
-          console.log(data)
-          setList(data.result);
-        
+
+        console.log(data);
+        setList(data.result);
+
       })
       .catch(err => {
         alert(err);
@@ -57,15 +57,15 @@ const Portal: React.FunctionComponent = () => {
     <p>Id：{user.id}</p>
     <p>你所发布的全部博客：</p>
     <Stack>
-      { 
+      {
         list?.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-              <p>Blog_id: {v.blog_id}</p>
-              <p>Aitle: {v.title}</p>
-              <PrimaryButton>
-                <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
-              </PrimaryButton>
-              <hr/>
+            <p>Blog_id: {v.blog_id}</p>
+            <p>Aitle: {v.title}</p>
+            <PrimaryButton>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+            </PrimaryButton>
+            <hr />
           </Stack.Item>;
         })
       }

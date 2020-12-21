@@ -11,7 +11,7 @@ const Login: React.FunctionComponent = () => {
   const [password, setPassword] = React.useState<string>();
   const [type, setType] = React.useState("login");
   const [error, setError] = React.useState<string>();
-  const loginRequest = useHttp<{ status: string }>("/api/user/login", "POST");
+  const loginRequest = useHttp<{ status: string; }>("/api/user/login", "POST");
   const userInfoRequest = useHttp<UserInfo>("/api/user/self", "GET");
 
   React.useEffect(() => {

@@ -25,19 +25,19 @@ const Page: React.FunctionComponent = () => {
 
   const [list, setList] = React.useState<ArticleModel[]>();
   React.useEffect(() => {
-    fetch("/api/page/"+ id, {
+    fetch("/api/page/" + id, {
       method: "GET",
       credentials: "include"
     })
       .then(res => {
         if (!res.ok) {
-          throw "failed to fetch"
-        } 
+          throw "failed to fetch";
+        }
         return res.json();
       })
       .then(data => {
         if (data.status === "success") {
-          console.log(data)
+          console.log(data);
           setList(data.data);
         } else {
           alert("已到列表的尽头");
@@ -49,18 +49,18 @@ const Page: React.FunctionComponent = () => {
       });
   }, [id]);
 
-  return list? <>
-    
+  return list ? <>
+
     <Stack>
-      { 
+      {
         list.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-              <p>Title: {v.title}</p>
-              <p>Author: {v.username}</p>
-              <PrimaryButton>
-                <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
-              </PrimaryButton>
-              <hr/>
+            <p>Title: {v.title}</p>
+            <p>Author: {v.username}</p>
+            <PrimaryButton>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+            </PrimaryButton>
+            <hr />
           </Stack.Item>;
         })
       }
@@ -70,10 +70,10 @@ const Page: React.FunctionComponent = () => {
     </PrimaryButton>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <PrimaryButton>
-      <NavLink style={{ textDecoration: "none", color: "white"}} to={`/page/${parseInt(id ?? "1") + 1}`}>下一页</NavLink>
+      <NavLink style={{ textDecoration: "none", color: "white" }} to={`/page/${parseInt(id ?? "1") + 1}`}>下一页</NavLink>
     </PrimaryButton>
-    
-  </>:<p>loading</p>
+
+  </> : <p>loading</p>;
 };
 
 export default Page;

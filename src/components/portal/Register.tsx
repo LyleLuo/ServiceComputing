@@ -14,7 +14,7 @@ const Register: React.FunctionComponent<RegisterModel> = (props) => {
   const [password, setPassword] = React.useState<string>();
   const [email, setEmail] = React.useState<string>();
   const [error, setError] = React.useState<string>();
-  const registerRequest = useHttp<{ status: string }>("/api/user/register", "POST");
+  const registerRequest = useHttp<{ status: string; }>("/api/user/register", "POST");
   const userInfoRequest = useHttp<UserInfo>("/api/user/self", "GET");
 
   React.useEffect(() => {
