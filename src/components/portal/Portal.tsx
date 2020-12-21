@@ -6,7 +6,7 @@ import useHttp from "../../hooks/http";
 import Login from "./Login";
 
 interface ArticleModel {
-  blog_id: string;
+  id: string;
   title: string;
 }
 
@@ -60,10 +60,10 @@ const Portal: React.FunctionComponent = () => {
       {
         list?.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-            <p>Blog_id: {v.blog_id}</p>
+            <p>Blog_id: {v.id}</p>
             <p>Aitle: {v.title}</p>
             <PrimaryButton>
-              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>Go to details</NavLink>
             </PrimaryButton>
             <hr />
           </Stack.Item>;
