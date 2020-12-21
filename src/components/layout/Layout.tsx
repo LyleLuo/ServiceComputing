@@ -34,7 +34,7 @@ const navItems: INavLinkGroup[] = [{
       url: "/post",
       key: "post",
       iconProps: {
-        iconName: "Contact"
+        iconName: "Add"
       }
     }
   ]
