@@ -436,6 +436,9 @@ func getJSON(sqlString string) ([]map[string]interface{}, error) {
 		}
 		tableData = append(tableData, entry)
 	}
+	for i, j := 0, len(tableData)-1; i < j; i, j = i+1, j-1 {
+		tableData[i], tableData[j] = tableData[j], tableData[i]
+	}
 	return tableData, nil
 }
 
