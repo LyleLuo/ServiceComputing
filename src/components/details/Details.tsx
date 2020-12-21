@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactMarkdown from 'react-markdown'
 import { useParams } from "react-router-dom";
 import useHttp from "../../hooks/http";
 import BlogContent from "../../models/BlogInfo";
@@ -35,7 +36,8 @@ const Details: React.FunctionComponent = () => {
       content && <>
         <p>作者：{content.author}</p>
         <p>标题：{content.title}</p>
-        <p>内容：{content.text}</p>
+        <p>内容：</p>
+        <ReactMarkdown>{content.text}</ReactMarkdown>
       </>
     }
   </>;
