@@ -1,5 +1,5 @@
 import * as React from "react";
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 import useHttp from "../../hooks/http";
 import BlogContent from "../../models/BlogInfo";
