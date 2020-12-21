@@ -42,17 +42,28 @@ const Post: React.FunctionComponent = () => {
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
       <TextField label="标题" onChange={(_, v) => setTitle(v)} />
     </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <Stack.Item styles={{ root: { paddingTop: 10, width: 1000 } }}>
       <Stack horizontal>
         <Stack.Item>
-        <TextField label="标签" onChange={(_, v) => setCurrTags(v)} />
+        <TextField value={currTags} label="标签" onChange={(_, v) => setCurrTags(v)} />
         </Stack.Item>
         <Stack.Item styles={{ root: { paddingLeft: 10, paddingTop: 30} }}>
           <PrimaryButton text="添加标签" onClick={() => {
             if(currTags){
               setTags([...tags,currTags!]);
+              setCurrTags("")
             }
             }} />
+        </Stack.Item>
+        <Stack.Item styles={{ root: { paddingTop: 40, paddingLeft:20} }}>
+          <i>已加标签：</i>
+          {
+            tags.map(
+              (tag) => {
+                return <i>{" " + tag}</i>
+              }
+            )
+          }
         </Stack.Item>
       </Stack>
     </Stack.Item>
@@ -69,7 +80,19 @@ const Post: React.FunctionComponent = () => {
     }
   </Stack>
 
-  const AfterPost = <>发布成功</>
+  const AfterPost = 
+  <Stack>
+    <Stack.Item styles={{ root: { paddingTop: 20} }}>
+      <Text variant="xLarge">发布成功</Text>
+    </Stack.Item>
+    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+      <PrimaryButton text="再写一篇" onClick={()=>{
+        setType("initial");
+        setCurrTags("");
+        setTags([]);
+        }} />
+    </Stack.Item>
+  </Stack>
   
 
   return type === "success" ? AfterPost : BeforePost;
