@@ -12,6 +12,7 @@ const Post: React.FunctionComponent = () => {
   const [currTags, setCurrTags] = React.useState<string>();
   const [tags,setTags] = React.useState<string[]>([]);
   const [text, setText] = React.useState<string>();
+  const [type, setType] = React.useState<string>();
   
   
 
@@ -26,13 +27,14 @@ const Post: React.FunctionComponent = () => {
       method:"POST",
       credentials:"include",
       headers:{ "Content-Type": "application/json" },
-      body:JSON.stringify({title:title,author_id:user ? user.id : "faker",tags:tags,text:text})
+      body:JSON.stringify({title:title,author_id:user ? user.id : -1,tags:tags,text:text})
     }).then(res=>res.json()).then(data => {
       console.log(data);
+      setType(data["status"])
     })
   }
 
-  const Content = 
+  const BeforePost = 
   <Stack>
     <Stack.Item>
       <Text variant="xxLarge">发布博客</Text>
@@ -60,9 +62,17 @@ const Post: React.FunctionComponent = () => {
     <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
       <PrimaryButton text="发布" onClick={post} />
     </Stack.Item>
+    {
+      (type === "not login" || type === "failure") && <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+        <p style={{ color: "red" }}>{type}</p>
+      </Stack.Item>
+    }
   </Stack>
 
-  return Content;
+  const AfterPost = <>发布成功</>
+  
+
+  return type === "success" ? AfterPost : BeforePost;
 };
 
 export default Post;
