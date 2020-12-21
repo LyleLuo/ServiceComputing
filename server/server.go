@@ -58,6 +58,7 @@ func main() {
 	}
 
 	r.GET("/page/:id", Page)
+	r.GET("/details/:id", Details)
 	//启动
 	r.Run() // listen and serve on 0.0.0.0:8080
 
@@ -383,6 +384,38 @@ func MY(c *gin.Context) {
 		"result": blogs,
 		"count":  len(blogs),
 	})
+}
+
+func Details(c *gin.Context) {
+	status := "success"
+	var blogId int
+	var title string
+	var text string
+	var username string
+	
+	id, covErr := strconv.Atoi(c.Param("id"))
+	if covErr != nil {
+		status = "param error"
+		c.JSON(http.StatusOK, gin.H{
+			"data": nil,
+			"status": status,
+		})
+		return
+	} else {
+		err := Db.QueryRow("SELECT blog.blog_id,blog.title,blog.text,user.username FROM blog,user WHERE blog.blog_id = ? and blog.author_id=user.user_id", id).Scan(&blogId, &title, &text, &username)
+		if err != nil {
+			status = fmt.Sprintf("%s", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"data": gin.H{
+				"id": blogId,
+				"title": title,
+				"text": text,
+				"author": username,
+			},
+			"status": status,
+		})
+	}
 }
 
 //跨域访问：cross  origin resource share
