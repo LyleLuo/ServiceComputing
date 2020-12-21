@@ -15,17 +15,17 @@ interface ListModel {
   data: ArticleModel[];
 }
 
-interface HomeRouteParams {
-  page?: string;
+interface PageRouteParams {
+  id?: string;
 }
 
-const Home: React.FunctionComponent = () => {
+const Page: React.FunctionComponent = () => {
   const { user } = React.useContext(AppContext);
-  const { page } = useParams<HomeRouteParams>();
+  const { id } = useParams<PageRouteParams>();
 
   const [list, setList] = React.useState<ArticleModel[]>();
   React.useEffect(() => {
-    fetch("/api/page/1", {
+    fetch("/api/page/"+ id, {
       method: "GET",
       credentials: "include"
     })
@@ -40,13 +40,14 @@ const Home: React.FunctionComponent = () => {
           console.log(data)
           setList(data.data);
         } else {
-          alert("failed to load");
+          alert("已到列表的尽头");
+          window.history.back();
         }
       })
       .catch(err => {
         alert(err);
       });
-  }, []);
+  }, [id]);
 
   return list? <>
     
@@ -65,9 +66,14 @@ const Home: React.FunctionComponent = () => {
       }
     </Stack>
     <PrimaryButton>
-      <NavLink style={{ textDecoration: "none", color: "white" }} to={`/page/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
+      <NavLink style={{ textDecoration: "none", color: "white" }} to={`/page/${parseInt(id ?? "1") - 1}`}>上一页</NavLink>
     </PrimaryButton>
-  </>:<p>loading...</p>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <PrimaryButton>
+      <NavLink style={{ textDecoration: "none", color: "white"}} to={`/page/${parseInt(id ?? "1") + 1}`}>下一页</NavLink>
+    </PrimaryButton>
+    
+  </>:<p>loading</p>
 };
 
-export default Home;
+export default Page;

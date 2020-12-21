@@ -9,6 +9,7 @@ import Tags from "./components/tags/Tags";
 import useHttp from "./hooks/http";
 import UserInfo from "./models/UserInfo";
 import Post from "./components/post/post"
+import Page from "./components/page/Page"
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = React.useState<UserInfo>();
@@ -45,6 +46,9 @@ const App: React.FunctionComponent = () => {
             </Route>
             <Route path="/details/:id">
               <Details />
+            </Route>
+            <Route path="/page/:id">
+              <Page />
             </Route>
           </Switch>
         </Layout>
