@@ -38,4 +38,4 @@ sudo chmod +x install.sh
 
 ## 部署方式
 
-* 
+* 如上所示

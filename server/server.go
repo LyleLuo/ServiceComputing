@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -19,7 +20,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
+	Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
@@ -34,7 +35,6 @@ func init() {
 }
 
 func main() {
-
 	// Init()
 	r := gin.Default()
 
@@ -51,9 +51,12 @@ func main() {
 		v1.GET("/self", Self)
 		v1.POST("/logout", Logout)
 		v1.POST("/post", Post)
+		v1.GET("/tags", Tags)
+		v1.POST("/portal", MY)
 		// v1.GET("/getTages", GetTages)
 	}
 
+	r.GET("/page/:id", Page)
 	//启动
 	r.Run() // listen and serve on 0.0.0.0:8080
 
@@ -310,6 +313,73 @@ func Self(c *gin.Context) {
 	})
 }
 
+type Tag struct {
+	Id      int    `json:"id"`
+	Tagname string `json:"tagname"`
+}
+
+func getTags() (tags []Tag, err error) {
+	rows, err := Db.Query("SELECT tag_id,tag_name FROM tag")
+	for rows.Next() {
+		var tag1 Tag
+		//遍历表中所有行的信息
+		rows.Scan(&tag1.Id, &tag1.Tagname)
+		//将user添加到users中
+		tags = append(tags, tag1)
+	}
+	return
+}
+
+func Tags(c *gin.Context) {
+	tags, err := getTags()
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": tags,
+		"count":  len(tags),
+	})
+}
+
+type Blog struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+}
+
+func getMY(user_id int) (blogs []Blog, err error) {
+	print("%d", user_id)
+	rows, err := Db.Query("SELECT blog_id,title FROM blog WHERE author_id = ?", 2)
+	//print("%d", len(rows))
+	for rows.Next() {
+		var blog Blog
+		//遍历表中所有行的信息
+		rows.Scan(&blog.Id, &blog.Title)
+		//将user添加到users中
+		blogs = append(blogs, blog)
+	}
+	return
+}
+
+type my_id struct {
+	Author_id int `json:"author_id"`
+}
+
+func MY(c *gin.Context) {
+	author_id := c.PostForm("author_id")
+	print(author_id)
+	i, err := strconv.Atoi(author_id)
+	blogs, err := getMY(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"result": blogs,
+		"count":  len(blogs),
+	})
+}
+
 //跨域访问：cross  origin resource share
 func CrosHandler() gin.HandlerFunc {
 	return func(context *gin.Context) {
@@ -330,4 +400,64 @@ func CrosHandler() gin.HandlerFunc {
 		//处理请求
 		context.Next()
 	}
+}
+
+func getJSON(sqlString string) ([]map[string]interface{}, error) {
+	rows, err := Db.Query(sqlString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	count := len(columns)
+	tableData := make([]map[string]interface{}, 0)
+	values := make([]interface{}, count)
+	valuePtrs := make([]interface{}, count)
+	for rows.Next() {
+		for i := 0; i < count; i++ {
+			valuePtrs[i] = &values[i]
+		}
+		rows.Scan(valuePtrs...)
+		entry := make(map[string]interface{})
+		for i, col := range columns {
+			var v interface{}
+			val := values[i]
+			b, ok := val.([]byte)
+			if ok {
+				v = string(b)
+			} else {
+				v = val
+			}
+			entry[col] = v
+		}
+		tableData = append(tableData, entry)
+	}
+	return tableData, nil
+}
+
+func Page(c *gin.Context) {
+	id, covErr := strconv.Atoi(c.Param("id"))
+	result, err := getJSON("select blog_id, username, title from blog, user where blog.author_id=user.user_id;")
+	status := "undefined"
+	itemPerPage := 3
+	start := (id - 1) * itemPerPage
+	last := id * itemPerPage
+	if id*itemPerPage > len(result) {
+		last = len(result)
+	}
+
+	if err != nil || covErr != nil || id < 1 || (id-1)*itemPerPage >= len(result) {
+		status = "fail"
+		start, last = 0, 0
+	} else {
+		status = "success"
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"data":   result[start:last],
+	})
 }
