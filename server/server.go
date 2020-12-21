@@ -141,7 +141,7 @@ type loginModel struct {
 }
 
 func Logout(c *gin.Context) {
-	c.SetCookie("jwt-token", "", 0, "/", ".", false, true)
+	c.SetCookie("jwt-token", "", 0, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
@@ -284,7 +284,7 @@ func Login(c *gin.Context) {
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
 	signedToken, _ := getToken(claims)
-	c.SetCookie("jwt-token", signedToken, 3600, "/", ".", false, true)
+	c.SetCookie("jwt-token", signedToken, 3600, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": status,
@@ -305,7 +305,7 @@ func Self(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("jwt-token", signedToken, 3600, "/", ".", false, true)
+	c.SetCookie("jwt-token", signedToken, 3600, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":  claims.UserName,
