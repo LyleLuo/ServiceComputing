@@ -1,4 +1,4 @@
-export default interface blogContent{
+export default interface BlogContent{
     title: string,
     author: string,
     tags: string[],
