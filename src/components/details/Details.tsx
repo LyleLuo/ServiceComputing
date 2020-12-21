@@ -1,5 +1,6 @@
 import * as React from "react";
 import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 import { useParams } from "react-router-dom";
 import AppContext from "../../AppContext";
 import useHttp from "../../hooks/http";
@@ -41,7 +42,7 @@ const Details: React.FunctionComponent = () => {
         <p>标题：{content.title}</p>
         <p>标签：{content.tags?.map((v, i) => <span key={i}>{v}&nbsp;</span>)}</p>
         <p>内容：</p>
-        <ReactMarkdown>{content.text}</ReactMarkdown>
+        <ReactMarkdown plugins={[gfm]}>{content.text}</ReactMarkdown>
       </>
     }
   </>;
