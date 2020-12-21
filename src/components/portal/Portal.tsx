@@ -32,7 +32,7 @@ const Portal: React.FunctionComponent = () => {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ author_id: user.id})
+      body: JSON.stringify({ author_id: user?.id})
     })
       .then(res => {
         if (!res.ok) {
@@ -41,12 +41,10 @@ const Portal: React.FunctionComponent = () => {
         return res.json();
       })
       .then(data => {
-        if (data.status === "success") {
+     
           console.log(data)
           setList(data.result);
-        } else {
-          alert("failed to load");
-        }
+        
       })
       .catch(err => {
         alert(err);
@@ -60,7 +58,7 @@ const Portal: React.FunctionComponent = () => {
     <p>你所发布的全部博客：</p>
     <Stack>
       { 
-        list.map((v, i) => {
+        list?.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
               <p>Blog_id: {v.blog_id}</p>
               <p>Aitle: {v.title}</p>
