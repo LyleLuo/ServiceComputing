@@ -180,10 +180,24 @@ func Post(c *gin.Context) {
 	fmt.Println()
 	fmt.Println("text:", text)
 
+	if author_id.(float64) <= 0 {
+		fmt.Println("not login")
+		c.JSON(http.StatusOK, gin.H{
+			"status": "not login",
+			"Data":   nil,
+		})
+		return
+	}
+
 	result, err := Db.Exec("insert into blog (author_id, title, text) values (?,?,?);", author_id, title, text)
 	var blog_id int64
 	if err != nil {
 		fmt.Println("err:%s", err)
+		c.JSON(http.StatusOK, gin.H{
+			"status": "failure",
+			"Data":   nil,
+		})
+		return
 	} else {
 		blog_id, _ = result.LastInsertId()
 	}
@@ -195,17 +209,35 @@ func Post(c *gin.Context) {
 		if err != nil {
 			if err == sql.ErrNoRows { //如果未查询到对应字段则...
 				result, err = Db.Exec("insert into tag (tag_name) values (?);", tag)
+				fmt.Println("tag not found, insert into databse")
 				if err != nil {
 					fmt.Println("err:%s", err)
+					c.JSON(http.StatusOK, gin.H{
+						"status": "failure",
+						"Data":   nil,
+					})
+					return
 				} else {
 					tag_id, _ = result.LastInsertId()
 				}
 			} else {
 				fmt.Println("failue")
 				log.Fatal(err)
+				c.JSON(http.StatusOK, gin.H{
+					"status": "failure",
+					"Data":   nil,
+				})
+				return
 			}
-		} else {
-			result, err = Db.Exec("insert into tag_blog (tag_id, blog_id) values (?,?);", tag_id, blog_id)
+		}
+		result, err = Db.Exec("insert into tag_blog (tag_id, blog_id) values (?,?);", tag_id, blog_id)
+		if err != nil {
+			fmt.Println("err%s", err)
+			c.JSON(http.StatusOK, gin.H{
+				"status": "failure",
+				"Data":   nil,
+			})
+			return
 		}
 	}
 
