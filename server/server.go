@@ -20,7 +20,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
+	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
@@ -316,8 +316,8 @@ type Blog struct {
 }
 
 func getMY(user_id int) (blogs []Blog, err error) {
-	print("%d", user_id)
-	rows, err := Db.Query("SELECT blog_id,title FROM blog WHERE author_id = ?", 2)
+	//print("%d", user_id)
+	rows, err := Db.Query("SELECT blog_id,title FROM blog WHERE author_id = ?", user_id)
 	//print("%d", len(rows))
 	for rows.Next() {
 		var blog Blog
@@ -329,14 +329,19 @@ func getMY(user_id int) (blogs []Blog, err error) {
 	return
 }
 
-type my_id struct {
-	Author_id int `json:"author_id"`
+type myID struct {
+	AuthorID string `json:"author_id"`
 }
 
 func MY(c *gin.Context) {
-	author_id := c.PostForm("author_id")
-	print(author_id)
-	i, err := strconv.Atoi(author_id)
+	var id myID
+	c.BindJSON(&id)
+	// id, err := strconv.Atoi(c.PostForm("author_id"))
+	// if err != nil {
+	// 	print(err)
+	// }
+	print("id is:", id.AuthorID)
+	i, err := strconv.Atoi(id.AuthorID)
 	blogs, err := getMY(i)
 	if err != nil {
 		log.Fatal(err)
