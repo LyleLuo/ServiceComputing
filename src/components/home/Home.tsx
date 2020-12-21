@@ -20,11 +20,12 @@ interface HomeRouteParams {
 }
 
 const Home: React.FunctionComponent = () => {
-  const { user } = React.useContext(AppContext);
+  const { user, setSelectedKey } = React.useContext(AppContext);
   const { page } = useParams<HomeRouteParams>();
 
   const [list, setList] = React.useState<ArticleModel[]>();
   React.useEffect(() => {
+    setSelectedKey && setSelectedKey("home");
     fetch("/api/page/1", {
       method: "GET",
       credentials: "include"

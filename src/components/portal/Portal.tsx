@@ -11,7 +11,7 @@ interface ArticleModel {
 }
 
 const Portal: React.FunctionComponent = () => {
-  const { user, setUser } = React.useContext(AppContext);
+  const { user, setUser, setSelectedKey } = React.useContext(AppContext);
   const logoutRequest = useHttp<{ status: string; }>("/api/user/logout", "POST");
   const [list, setList] = React.useState<ArticleModel[]>();
 
@@ -28,6 +28,7 @@ const Portal: React.FunctionComponent = () => {
   };
 
   React.useEffect(() => {
+    setSelectedKey && setSelectedKey("portal");
     fetch("/api/user/portal", {
       method: "POST",
       credentials: "include",

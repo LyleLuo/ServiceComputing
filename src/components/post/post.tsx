@@ -5,14 +5,16 @@ import { PrimaryButton, Stack, Text, TextField } from "@fluentui/react";
 const postUrl = "/api/user/post";
 
 const Post: React.FunctionComponent = () => {
-  const { user } = React.useContext(AppContext);
+  const { user, setSelectedKey } = React.useContext(AppContext);
   const [title, setTitle] = React.useState<string>();
   const [currTags, setCurrTags] = React.useState<string>();
   const [tags, setTags] = React.useState<string[]>([]);
   const [text, setText] = React.useState<string>();
   const [type, setType] = React.useState<string>();
 
-
+  React.useEffect(() => {
+    setSelectedKey && setSelectedKey("post");
+  }, [])
 
   React.useEffect(() => {
     // console.log("title:",title);
@@ -57,8 +59,8 @@ const Post: React.FunctionComponent = () => {
             <i>已加标签：</i>
             {
               tags.map(
-                (tag) => {
-                  return <i>{" " + tag}</i>;
+                (tag, index) => {
+                  return <i key={index}>{" " + tag}</i>;
                 }
               )
             }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
+import AppContext from "../../AppContext";
 import useHttp from "../../hooks/http";
 import BlogContent from "../../models/BlogInfo";
 
@@ -10,6 +11,7 @@ interface DetailsRouteParam {
 
 const Details: React.FunctionComponent = () => {
   const { id } = useParams<DetailsRouteParam>();
+  const { setSelectedKey } = React.useContext(AppContext);
   const [content, setContent] = React.useState<BlogContent>();
   const detailsRequest = useHttp<{ status: string, data: BlogContent; }>(`/api/details/${id}`, "GET");
 
@@ -27,6 +29,7 @@ const Details: React.FunctionComponent = () => {
   }, [detailsRequest.data, detailsRequest.ok, detailsRequest.loading]);
 
   React.useEffect(() => {
+    setSelectedKey && setSelectedKey("home");
     detailsRequest.fire();
   }, []);
 
@@ -36,6 +39,7 @@ const Details: React.FunctionComponent = () => {
       content && <>
         <p>作者：{content.author}</p>
         <p>标题：{content.title}</p>
+        <p>标签：{content.tags?.map((v, i) => <span key={i}>{v}&nbsp;</span>)}</p>
         <p>内容：</p>
         <ReactMarkdown>{content.text}</ReactMarkdown>
       </>
