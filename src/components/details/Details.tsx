@@ -31,6 +31,13 @@ const Details: React.FunctionComponent = () => {
 
   return <>
     <p>文章 Id：{id}</p>
+    {
+      content && <>
+        <p>作者：{content.author}</p>
+        <p>标题：{content.title}</p>
+        <p>内容：{content.text}</p>
+      </>
+    }
   </>;
 };
 
