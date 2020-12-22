@@ -50,23 +50,22 @@ const Portal: React.FunctionComponent = () => {
       .catch(err => {
         alert(err);
       });
-  }, []);
+  }, [user]);
 
   return user ? <>
-    <p>欢迎，{user.name}！</p>
-    <p>邮箱：{user.email}</p>
-    <p>Id：{user.id}</p>
-    <p>你所发布的全部博客：</p>
+    <p style={{fontSize: 40}}>欢迎，{user.name}！</p>
+    <p style={{fontSize: 20}}>你的邮箱：{user.email}</p>
+    <p style={{fontSize: 20}}>你的id：{user.id}</p>
+    <p style={{fontSize: 20}}>你的博客：</p>
     <Stack>
       {
         list?.map((v, i) => {
-          return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-            <p>Blog_id: {v.id}</p>
-            <p>Aitle: {v.title}</p>
-            <PrimaryButton>
+          return <Stack.Item key={i} styles={{ root: { paddingLeft: 20, height: 80, borderRadius: 20, marginBottom: 10, borderStyle: "groove",  backgroundColor : "cornsilk"} }}>
+            <p style={{fontSize: 15}}>博客号: {v.id}</p>
+            <p style={{fontWeight: "bold"}}>标题: {v.title}</p>
+            <PrimaryButton style={{position: "relative", top: -55, right: 20, borderRadius: 10, float: "right"}}>
               <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>Go to details</NavLink>
             </PrimaryButton>
-            <hr />
           </Stack.Item>;
         })
       }
