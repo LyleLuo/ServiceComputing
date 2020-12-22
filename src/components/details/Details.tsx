@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import AppContext from "../../AppContext";
 import useHttp from "../../hooks/http";
 import BlogContent from "../../models/BlogInfo";
+import { ProgressIndicator } from "@fluentui/react";
 
 interface DetailsRouteParam {
   id?: string;
@@ -35,15 +36,14 @@ const Details: React.FunctionComponent = () => {
   }, []);
 
   return <>
-    <p>文章 Id：{id}</p>
     {
-      content && <>
-        <p>作者：{content.author}</p>
-        <p>标题：{content.title}</p>
+      content ? <>
+        <h1>{content.title}</h1>
         <p>标签：{content.tags?.map((v, i) => <span key={i}>{v}&nbsp;</span>)}</p>
-        <p>内容：</p>
+        <p>作者：{content.author}</p>
         <ReactMarkdown plugins={[gfm]}>{content.text}</ReactMarkdown>
-      </>
+      </> :
+        <ProgressIndicator label="请稍等" description={`正在加载文章 ${id}`} />
     }
   </>;
 };

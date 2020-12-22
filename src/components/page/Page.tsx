@@ -31,7 +31,7 @@ const Page: React.FunctionComponent = () => {
     })
       .then(res => {
         if (!res.ok) {
-          throw "failed to fetch";
+          throw "加载失败";
         }
         return res.json();
       })
@@ -55,10 +55,10 @@ const Page: React.FunctionComponent = () => {
       {
         list.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-            <p>Title: {v.title}</p>
-            <p>Author: {v.username}</p>
+            <p>标题: {v.title}</p>
+            <p>作者: {v.username}</p>
             <PrimaryButton>
-              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>查看详情</NavLink>
             </PrimaryButton>
             <hr />
           </Stack.Item>;

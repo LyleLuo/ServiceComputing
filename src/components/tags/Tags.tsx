@@ -1,5 +1,5 @@
 
-import { IStackTokens, Dropdown, DropdownMenuItemType, IDropdownStyles, PrimaryButton, DefaultButton, Stack, Checkbox, IDropdownOption } from "@fluentui/react";
+import { IStackTokens, Dropdown, DropdownMenuItemType, IDropdownStyles, PrimaryButton, DefaultButton, Stack, Checkbox, IDropdownOption, ProgressIndicator } from "@fluentui/react";
 import * as React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import AppContext from "../../AppContext";
@@ -29,24 +29,24 @@ const Tags: React.FunctionComponent = () => {
   const [listorigin, setListO] = React.useState<ArticleModelT[]>();
   const [tags, setTags] = React.useState<TagsModel[]>();
 
-  const isWant = (element:ArticleModelT):boolean=> {  //筛选函数
-    var good=0;
-    console.log("listorigin is",listorigin)
-    console.log("list is",list)
-    if(selectedKeys.length ==0){
+  const isWant = (element: ArticleModelT): boolean => {  //筛选函数
+    let good = 0;
+    console.log("listorigin is", listorigin);
+    console.log("list is", list);
+    if (selectedKeys.length == 0) {
       return true;
     }
-    if(element.tags ==null){
-      element.tags=["no tags"]
+    if (element.tags == null) {
+      element.tags = ["no tags"];
     }
-    for (let i = 0; i <= selectedKeys.length-1; i++) {
-      if(element.tags.indexOf(selectedKeys[i].toString())==-1){
+    for (let i = 0; i <= selectedKeys.length - 1; i++) {
+      if (element.tags.indexOf(selectedKeys[i].toString()) == -1) {
         good = -1;
       }
     }
-    console.log("good is",good)
+    console.log("good is", good);
     return good != -1;
-  }
+  };
   const onChange = (event: React.FormEvent<HTMLDivElement>, item?: IDropdownOption): void => {  //checkbox的函数
     if (item) {
       setSelectedKeys(
@@ -94,8 +94,8 @@ const Tags: React.FunctionComponent = () => {
     <Stack tokens={stackTokens}>
 
       <Dropdown
-        placeholder="Select tags"
-        label="Select Tags to search blog"
+        placeholder="选择标签"
+        label="选择标签以筛选文章"
         selectedKeys={selectedKeys}
         // defaultSelectedKeys={['apple', 'banana', 'grape']}
         multiSelect
@@ -109,18 +109,18 @@ const Tags: React.FunctionComponent = () => {
       {
         list.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 0 } }}>
-            <p>Title: {v.title}</p>
-            <p>Author: {v.author}</p>
-            <p>Tags:{` ${v.tags}`}</p>
+            <p>标题: {v.title}</p>
+            <p>作者: {v.author}</p>
+            <p>标签:{` ${v.tags ?? "无"}`}</p>
             <PrimaryButton>
-              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>Go to details</NavLink>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>查看详情</NavLink>
             </PrimaryButton>
             <hr />
           </Stack.Item>;
         })
       }
     </Stack>
-  </> : <p>loading...</p>;
+  </> : <ProgressIndicator label="请稍等" description="正在加载标签列表" />;
 };
 
 export default Tags;

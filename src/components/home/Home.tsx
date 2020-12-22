@@ -1,4 +1,4 @@
-import { ActionButton, PrimaryButton, Stack, Image } from "@fluentui/react";
+import { ActionButton, PrimaryButton, Stack, Image, ProgressIndicator } from "@fluentui/react";
 import * as React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import AppContext from "../../AppContext";
@@ -32,7 +32,7 @@ const Home: React.FunctionComponent = () => {
     })
       .then(res => {
         if (!res.ok) {
-          throw "failed to fetch";
+          throw "加载失败";
         }
         return res.json();
       })
@@ -41,7 +41,7 @@ const Home: React.FunctionComponent = () => {
           console.log(data);
           setList(data.data);
         } else {
-          alert("failed to load");
+          alert("加载失败");
         }
       })
       .catch(err => {
@@ -55,10 +55,10 @@ const Home: React.FunctionComponent = () => {
       {
         list.map((v, i) => {
           return <Stack.Item key={i} styles={{ root: { paddingTop: 10 } }}>
-            <p>Title: {v.title}</p>
-            <p>Author: {v.username}</p>
+            <p>标题: {v.title}</p>
+            <p>作者: {v.username}</p>
             <PrimaryButton>
-              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>Go to details</NavLink>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.blog_id}`}>查看详情</NavLink>
             </PrimaryButton>
             <hr />
           </Stack.Item>;
@@ -68,7 +68,7 @@ const Home: React.FunctionComponent = () => {
     <PrimaryButton>
       <NavLink style={{ textDecoration: "none", color: "white" }} to={`/page/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
     </PrimaryButton>
-  </> : <p>loading...</p>;
+  </> : <ProgressIndicator label="请稍等" description="正在加载文章列表" />;
 };
 
 export default Home;

@@ -1,4 +1,4 @@
-import { PrimaryButton, Stack } from "@fluentui/react";
+import { PrimaryButton, ProgressIndicator, Stack } from "@fluentui/react";
 import * as React from "react";
 import AppContext from "../../AppContext";
 import { NavLink } from "react-router-dom";
@@ -44,7 +44,7 @@ const Portal: React.FunctionComponent = () => {
       .then(data => {
 
         console.log(data);
-        setList(data.result);
+        setList(data.result ?? []);
 
       })
       .catch(err => {
@@ -64,10 +64,10 @@ const Portal: React.FunctionComponent = () => {
             <p style={{fontSize: 15}}>博客号: {v.id}</p>
             <p style={{fontWeight: "bold"}}>标题: {v.title}</p>
             <PrimaryButton style={{position: "relative", top: -55, right: 20, borderRadius: 10, float: "right"}}>
-              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>Go to details</NavLink>
+              <NavLink style={{ textDecoration: "none", color: "white" }} to={`/details/${v.id}`}>查看详情</NavLink>
             </PrimaryButton>
           </Stack.Item>;
-        })
+        }) ?? <ProgressIndicator label="请稍等" description="正在加载文章列表" />
       }
     </Stack>
     <PrimaryButton text="退出" onClick={logout} />
