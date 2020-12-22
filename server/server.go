@@ -417,10 +417,12 @@ func MY(c *gin.Context) {
 
 func Details(c *gin.Context) {
 	status := "success"
-	var blogId int
+	var blogID int
 	var title string
 	var text string
 	var username string
+	var email string
+	var authorID int
 
 	id, covErr := strconv.Atoi(c.Param("id"))
 	if covErr != nil {
@@ -431,16 +433,30 @@ func Details(c *gin.Context) {
 		})
 		return
 	} else {
-		err := Db.QueryRow("SELECT blog.blog_id,blog.title,blog.text,user.username FROM blog,user WHERE blog.blog_id = ? and blog.author_id=user.user_id", id).Scan(&blogId, &title, &text, &username)
+		err := Db.QueryRow("SELECT blog.blog_id,blog.title,blog.text,blog.author_id,user.username,user.email FROM blog,user WHERE blog.blog_id = ? and blog.author_id=user.user_id", id).Scan(&blogID, &title, &text, &authorID, &username, &email)
 		if err != nil {
 			status = fmt.Sprintf("%s", err)
 		}
+		rows, err := Db.Query("SELECT `t0`.`tag_name` FROM `tag_blog` AS `t` LEFT JOIN `tag` AS `t0` ON `t`.`tag_id` = `t0`.`tag_id` WHERE `t`.`blog_id` = ?", id)
+		if err != nil {
+			status = fmt.Sprintf("%s", err)
+		}
+		var tags []string
+		for rows.Next() {
+			var tagname string
+			rows.Scan(&tagname)
+			tags = append(tags, tagname)
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"data": gin.H{
-				"id":     blogId,
-				"title":  title,
-				"text":   text,
-				"author": username,
+				"id":          blogID,
+				"title":       title,
+				"text":        text,
+				"author":      username,
+				"authorEmail": email,
+				"authorId":    authorID,
+				"tags":        tags,
 			},
 			"status": status,
 		})
