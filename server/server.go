@@ -20,6 +20,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
+	//在这里改变连接的数据库，下面第一条是云服务器上的数据库（速度可能比较慢），第二条是ubuntu上的数据库（推荐），也可以连您配合的数据库
 	// Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
 	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
 
