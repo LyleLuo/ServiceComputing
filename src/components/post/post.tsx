@@ -50,7 +50,7 @@ const Post: React.FunctionComponent = () => {
           <Stack.Item styles={{ root: { paddingLeft: 10, paddingTop: 30 } }}>
             <PrimaryButton text="添加标签" onClick={() => {
               if (currTags) {
-                setTags([...tags, currTags!]);
+                setTags([...tags, currTags]);
                 setCurrTags("");
               }
             }} />
@@ -95,7 +95,7 @@ const Post: React.FunctionComponent = () => {
     </Stack>;
 
 
-  return type === "success" ? AfterPost : BeforePost;
+  return user ? type === "success" ? AfterPost : BeforePost : <p>请先登录</p>;
 };
 
 export default Post;
