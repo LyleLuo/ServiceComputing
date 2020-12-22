@@ -120,6 +120,11 @@ cd server
 nano server.go # 此步修改源代码中数据库的连接字符串：Db, err = sql.Open("mysql", "......")
 go run server.go
 ```
+如果不想使用nano命令的话，去`server.go`找对应的数据库配置代码（23行）用下面代码改变连接的数据库：
+
+```
+Db, err = sql.Open("数据库类型", "用户名:密码@tcp(数据库IP:端口)/数据库名称")
+```
 
 ## API 原型说明
 ### Login `POST /user/login`
