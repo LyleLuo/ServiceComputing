@@ -43,3 +43,6 @@ sudo chmod +x install.sh
 * 如果实在连不上数据库，有以下两种方法：
   * 自己配置一个数据库
   * 联系组员开恢复ubuntu数据库
+
+## 根 API 文档
+直接访问 `localhost:8080` 即可查看位于根路由的 API 文档。
