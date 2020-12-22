@@ -315,7 +315,63 @@ func Self(c *gin.Context) {
 	})
 }
 
+type Tag struct {
+	Id      int    `json:"id"`
+	Tagname string `json:"tagname"`
+}
 
+type BlogT struct {
+	ID     int      `json:"id"`
+	Author string   `json:"author"`
+	Title  string   `json:"title"`
+	Tags   []string `json:"tags"`
+}
+
+func getTags() (tags []Tag, err error) {
+	rows, err := Db.Query("SELECT tag_id,tag_name FROM tag")
+	for rows.Next() {
+		var tag1 Tag
+		//遍历表中所有行的信息
+		rows.Scan(&tag1.Id, &tag1.Tagname)
+		//将user添加到users中
+		tags = append(tags, tag1)
+	}
+	return
+}
+
+func getblogTs() (blogs []BlogT, err error) {
+	rows, err := Db.Query("select blog_id,title,username from blog, user where user.user_id = blog.author_id ")
+	for rows.Next() {
+		var tag1 BlogT
+		//var temp int
+		//遍历表中所有行的信息
+		rows.Scan(&tag1.ID, &tag1.Title, &tag1.Author)
+		rows2, _ := Db.Query("select tag_name from tag_blog, tag where tag.tag_id = tag_blog.tag_id and tag_blog.blog_id = ?", tag1.ID)
+		//将user添加到users中
+		for rows2.Next() {
+			var tag string
+			rows2.Scan(&tag)
+			tag1.Tags = append(tag1.Tags, tag)
+		}
+		blogs = append(blogs, tag1)
+	}
+	return
+}
+
+func Tags(c *gin.Context) {
+	tags, err := getTags()
+	blogs, _ := getblogTs()
+	if err != nil {
+		log.Fatal(err)
+	}
+	//H is a shortcut for map[string]interface{}
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"tags":   tags,
+		"blogs":  blogs,
+		"count":  len(tags),
+	})
+}
 
 type Blog struct {
 	Id    int    `json:"id"`
