@@ -20,8 +20,8 @@ var Db *sql.DB
 func init() {
 	var err error
 	fmt.Println("connecting to mysql")
-	// Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
-	Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
+	Db, err = sql.Open("mysql", "mysql@sc-database:ServiceComputing2020@tcp(sc-database.mysql.database.azure.com:3306)/go")
+	// Db, err = sql.Open("mysql", "root:111111@tcp(172.26.28.10:3306)/go")
 
 	err = Db.Ping()
 	if err != nil {
