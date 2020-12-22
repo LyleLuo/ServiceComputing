@@ -39,6 +39,7 @@ func init() {
 func main() {
 	// Init()
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
 
 	//允许跨域访问
 	r.Use(CrosHandler())
@@ -60,6 +61,7 @@ func main() {
 
 	r.GET("/page/:id", Page)
 	r.GET("/details/:id", Details)
+	r.GET("/", Home)
 	//启动
 	r.Run() // listen and serve on 0.0.0.0:8080
 
@@ -547,4 +549,8 @@ func Page(c *gin.Context) {
 		"status": status,
 		"data":   result[start:last],
 	})
+}
+
+func Home(c *gin.Context) {
+	c.HTML(200, "api.tmpl", nil)
 }
