@@ -1,7 +1,10 @@
 # Service Computing
 Blog of ServiceComputing course
 
-这是我用于记录学习服务计算的博客   
+这是我用于记录学习服务计算的博客
+
+授课老师为潘茂林   
+
 - [第一次博客——安装 go 语言开发环境](mysqrt)
 - [第二次博客——TDD](TDD)
 - [第三次博客——编写selpg程序](selpg)
