@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Document</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<h1>API Document</h1>
+<h2>Login <pre><code>POST /user/login</code></pre></h2>
+使用该 API 可以登录用户账户。
+
+<pre><code>
+Content-Type: application/json
+Method: POST
+Body: 
+{ 
+    "username": string, 
+    "password": string
+}
+Response: 
+{ 
+    "status": string
+}
+</code></pre>
+<h2>Register <pre><code>POST /user/register</code></pre></h2>
+使用该 API 可以注册用户账户。
+
+<pre><code>
+Content-Type: application/json
+Method: POST
+Body: 
+{ 
+    "username": string, 
+    "password": string, 
+    "email": string
+} 
+Response: 
+{ 
+    "status": string 
+}
+</code></pre>
+<h2>Self <pre><code>GET /user/self</code></pre></h2>
+使用该 API 可以获取当前已登录用户的信息。
+
+<pre><code>
+Content-Type: application/json
+Method: GET
+Body: Empty
+Response: 
+{ 
+    "name": string, 
+    "email": string, 
+    "id": number 
+}
+</code></pre>
+<h2>Logout <pre><code>POST /user/logout</code></pre></h2>
+使用该 API 可以获取退出当前用户。
+
+<pre><code>
+Content-Type: application/json
+Method: POST
+Body: Empty
+Response: 
+{ 
+    "status": string
+}
+</code></pre>
+<h2>Post <pre><code>POST /user/post</code></pre></h2>
+使用该 API 可以发布博客。
+
+<pre><code>
+Content-Type: application/json
+Method: POST
+Body: 
+{ 
+    "author_id": string, 
+    "tags": string[], 
+    "text": string, 
+    "title": string
+}
+Response: 
+{ 
+    "status": string,
+    "Data": { 
+        "blog_id": number
+    }
+}
+</code></pre>
+<h2>Tags <pre><code>GET /user/tags</code></pre></h2>
+使用该 API 可以获取所有的标签和博客列表。
+
+<pre><code>
+Content-Type: application/json
+Method: GET
+Body: Empty
+Response: 
+{ 
+    "status": string, 
+    "tags": { 
+        "id": number, 
+        "tagname": string 
+    }[], 
+    "blogs": { 
+        "id": number, 
+        "author": string, 
+        "title": string, 
+        "tags": string[]
+    }[], 
+    "count": number
+}
+</code></pre>
+<h2>Portal <pre><code>POST /user/portal</code></pre></h2>
+使用该 API 可以获取指定用户的博客列表。
+
+<pre><code>
+Content-Type: application/json
+Method: POST
+Body: 
+{
+    "author_id": number
+}
+Response:
+{
+    "result": {
+        "id": number,
+        "title": string
+    }[],
+    "count": number
+}
+</code></pre>
+<h2>Page <pre><code>GET /page/:id</code></pre></h2>
+使用该 API 可以获取指定页的博客列表。
+
+<pre><code>
+Content-Type: application/json
+Method: GET
+Body: Empty
+Response:
+{
+    "status": string,
+    "data": {
+        "blog_id": string,
+        "title": string,
+        "username": string
+    }[]
+}
+</code></pre>
+<h2>Details <pre><code>GET /details/:id</code></pre></h2>
+使用该 API 可以获取指定 ID 的博客。
+
+<pre><code>
+Content-Type: application/json
+Method: GET
+Body: Empty
+Response:
+{
+    "status": string,
+    "data": {
+        "author": string,
+        "authorEmail": string,
+        "authorId": number,
+        "id": number,
+        "tags": string[],
+        "text": string,
+        "title": string
+    }
+}
+</code></pre>
+</body>
+</html>

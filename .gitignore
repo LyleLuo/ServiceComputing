@@ -1,0 +1,6 @@
+.ionide/
+.parcel-cache/
+.vscode/
+.idea/
+.vs/
+build/
