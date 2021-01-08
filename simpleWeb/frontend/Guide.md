@@ -153,7 +153,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     // 提供状态
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser}}>
         // 这里的东西将能拿到全局状态
     </AppContext.Provider>
   );
@@ -250,7 +250,7 @@ const Register: React.FunctionComponent = () => {
   };
 
   // 你甚至可以把组件的一部分拿出来当作一个单独的组件
-  const Button = <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+  const Button = <Stack.Item styles={{ root: { paddingTop: 10, width: 300 }}}>
       <PrimaryButton text="注册" onClick={Register} />
     </Stack.Item>;
 
@@ -259,14 +259,14 @@ const Register: React.FunctionComponent = () => {
     <Stack.Item>
       <Text variant="xxLarge">注册账户</Text>
     </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 }}}>
       // 这个编辑框默认值为 name 状态的值，如果用户输入发生改变了则调用 setName 更新 name 状态
       <TextField label="用户名" defaultValue={name} onChange={(_, v) => setName(v)} />
     </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 }}}>
       <TextField label="密码" canRevealPassword={true} type="password" defaultValue={password} onChange={(_, v) => setPassword(v)} />
     </Stack.Item>
-    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 } }}>
+    <Stack.Item styles={{ root: { paddingTop: 10, width: 300 }}}>
       <TextField label="邮箱" type="email" defaultValue={email} onChange={(_, v) => setEmail(v)} />
     </Stack.Item>
     // 这里使用上面定义的组件 Button
@@ -435,7 +435,7 @@ const XXX = () => {
   const { page } = useParams<>();
   return <PrimaryButton>
     // 这里的 style 是为了消除下划线和字体的颜色
-    <NavLink style={{ textDecoration: "none", color: "white" }} to="/abc">转到 abc</NavLink>
+    <NavLink style={{ textDecoration: "none", color: "white"}} to="/abc">转到 abc</NavLink>
   </PrimaryButton>;
 }
 ```
@@ -453,7 +453,7 @@ const XXX = () => {
   <p>现在是第 {page} 页</p>
   <PrimaryButton>
     // `...` 括起来的字符串可以用 ${...} 嵌入表达式的值。
-    <NavLink style={{ textDecoration: "none", color: "white" }} to={`/article/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
+    <NavLink style={{ textDecoration: "none", color: "white"}} to={`/article/${(page ? parseInt(page) : 1) + 1}`}>下一页</NavLink>
   </PrimaryButton></>;
 }
 ```
