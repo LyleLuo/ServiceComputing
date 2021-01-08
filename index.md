@@ -8,3 +8,7 @@ Blog of ServiceComputing course
 - [第四次博客——监听INI配置文件](pconfig)
 - [第五次博客——将结构数据解析为JSON格式](myjson)
 - [第六次博客——修改、改进 RxGo 包](RxGo)
+- [第七次博客——cloudgo](cloudgo)
+- [第九次项目——Simple-web](simpleWeb)
+- [第十次博客——k8s](k8s)
+- [第十一次博客——docker](docker)
